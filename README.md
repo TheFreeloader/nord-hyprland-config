@@ -29,22 +29,23 @@ chmod +x install.sh
 
 ### Applications Installed
 - **Hyprland**: Wayland compositor
-- **Waybar**: Status bar
+- **Waybar**: Status bar with TUI-focused modules
 - **Rofi**: Application launcher
-- **Nautilus/Thunar**: File managers
+- **Nautilus**: File manager
 - **GNOME Text Editor**: Text editor
-- **btop**: System monitor with Nordic theme
+- **btop**: System monitor with Nordic theme (TUI)
 - **Blueberry**: Bluetooth manager GUI
 - **Dunst/Mako**: Notification daemons
 - **Screenshot tools**: grim + slurp + satty (annotation)
-- **Audio controls**: pavucontrol, pamixer, pulsemixer
+- **Audio controls**: wiremix (TUI), impala (network TUI), pamixer (CLI)
 - **System controls**: brightnessctl, playerctl
-- **Network**: NetworkManager + nm-applet
 - **Media viewers**: mpv (video), imv (images), evince (PDF)
 - **Archive manager**: file-roller
 - **Web browser**: Firefox
 - **System info**: neofetch
 - **Utilities**: tree, wget, curl, unzip, p7zip
+
+> **📱 TUI-First Approach**: This configuration prioritizes terminal-based (TUI) applications over GUI ones. Clicking Waybar modules opens tools like `wiremix` for audio, `impala` for network, and `btop` for system monitoring in Alacritty terminal windows.
 
 ### Themes
 - **GTK Theme**: Nordic (dark variant)
@@ -66,9 +67,21 @@ The minimal installer automatically:
 2. **Checks dependencies**: Only installs missing packages from the required list
 3. **Backs up configs**: Creates timestamped backup in `~/.config_backup_[date]`
 4. **Installs configurations**: Copies all config files to `~/.config/`
-5. **Sets up themes**: Installs and configures Nordic theme system-wide
-6. **Enables services**: Starts NetworkManager, Bluetooth, and enables SDDM
-7. **Post-setup**: Creates utility scripts and environment variables
+5. **Sets up themes**: Installs and configures Graphite Nord theme system-wide
+6. **Copies wallpaper**: Sets up Nord wallpaper from `.themes/nord/background/` to `~/Pictures/Wallpapers/`
+7. **Enables services**: Starts Bluetooth and enables SDDM
+8. **Post-setup**: Creates utility scripts and environment variables
+
+## 🖥️ TUI-First Philosophy
+
+This configuration embraces **Terminal User Interface (TUI)** applications over traditional GUI programs:
+
+- **🎵 Audio Control**: Click Waybar volume → Opens `wiremix` (TUI) in Alacritty
+- **🌐 Network Management**: Click Waybar network → Opens `impala` (TUI) in Alacritty  
+- **📊 System Monitoring**: Click Waybar CPU → Opens `btop` (TUI) in Alacritty
+- **🔧 Quick Actions**: Right-click for instant CLI commands (e.g., `pamixer -t` to mute)
+
+**Why TUI?** Faster, lighter, more keyboard-friendly, and perfectly integrated with the terminal-centric workflow.
 
 ## 📦 Packages Installed (if missing)
 
@@ -84,14 +97,16 @@ The minimal installer automatically:
 - swaybg (wallpaper)
 
 ### Network & Bluetooth
-- networkmanager, network-manager-applet
-- pulseaudio-bluetooth, bluez-utils
+- **impala** (TUI network manager - primary interface)
+- pulseaudio-bluetooth, bluez-utils (Bluetooth support)
 
-### Audio & Controls
-- pavucontrol, pulsemixer (audio GUI)
-- brightnessctl (brightness)
+### Audio & Controls (TUI-Focused)
+- **wiremix** (TUI audio mixer - primary)
+- **impala** (TUI network manager)
+- **pamixer** (CLI audio control)
+- **pulsemixer** (TUI audio mixer - alternative)
+- brightnessctl (brightness control)
 - playerctl (media control)
-- pamixer (audio CLI)
 
 ### File Management & Viewers
 - thunar, thunar-volman (file manager)
@@ -186,9 +201,9 @@ The Nord color palette is used throughout:
 - **nord14**: `#A3BE8C` (Green)
 
 ### Wallpapers
-Place your wallpapers in `~/Pictures/Wallpapers/` and use the `change-wallpaper` script:
+The installer automatically copies the Nord wallpaper from `.themes/nord/background/omarchy-nord-1.png` to `~/Pictures/Wallpapers/`. You can add more wallpapers there and use the `change-wallpaper` script:
 ```bash
-change-wallpaper                    # Random wallpaper
+change-wallpaper                    # Random wallpaper from ~/Pictures/Wallpapers/
 change-wallpaper ~/path/to/image.png # Specific wallpaper
 ```
 
