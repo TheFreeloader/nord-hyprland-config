@@ -85,8 +85,7 @@ install_graphite_theme() {
             
             if [[ -f "./install.sh" ]]; then
                 log "Installing Graphite with nord and dark tweaks..."
-                ./install.sh --dest "$HOME/.themes" --color dark --tweaks nord
-                ./install.sh --dest "$HOME/.local/share/themes" --color dark --tweaks nord 2>/dev/null || true
+                ./install.sh -l -t -c dark -s --tweaks nord
                 log "Graphite nord dark theme installed successfully"
             fi
             
