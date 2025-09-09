@@ -285,7 +285,21 @@ Feel free to submit issues, feature requests, or pull requests to improve this c
 
 ## 📸 Screenshots
 
-*Add screenshots of your setup here*
+### Desktop Overview
+![Desktop Overview](screenshots/01-desktop-overview.png)
+*Clean Nord-themed desktop with Hyprland window manager*
+
+### Waybar Status Bar
+![Waybar Details](screenshots/02-waybar-details.png)
+*Nord-themed Waybar with TUI-focused modules*
+
+### Rofi Application Launcher
+![Rofi Launcher](screenshots/03-rofi-launcher.png)
+*Beautiful Nord-themed Rofi launcher*
+
+### Terminal & TUI Applications
+![Terminal TUI](screenshots/04-terminal-tui.png)
+*TUI applications like wiremix, btop, and impala in action*
 
 ---
 
