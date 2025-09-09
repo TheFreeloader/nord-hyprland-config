@@ -87,7 +87,7 @@ This configuration embraces **Terminal User Interface (TUI)** applications over 
 
 ### Core Components
 - hyprland, waybar, rofi
-- nautilus, thunar (file managers)
+- nautilus (file manager)
 - gnome-text-editor, btop, blueberry
 
 ### System Tools
@@ -109,7 +109,7 @@ This configuration embraces **Terminal User Interface (TUI)** applications over 
 - playerctl (media control)
 
 ### File Management & Viewers
-- thunar, thunar-volman (file manager)
+- nautilus (file manager)
 - gvfs, gvfs-mtp (virtual file systems)
 - file-roller (archive manager)
 - evince (PDF viewer)
@@ -165,7 +165,7 @@ If you prefer to install components manually:
 ### Dependencies (Arch Linux)
 ```bash
 # Core system packages (automatically installs yay if needed)
-sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland networkmanager network-manager-applet pulseaudio-bluetooth bluez-utils thunar thunar-volman gvfs gvfs-mtp file-roller evince firefox mpv imv neofetch tree wget curl unzip p7zip xdg-user-dirs xdg-utils man-db man-pages
+sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland networkmanager network-manager-applet pulseaudio-bluetooth bluez-utils gvfs gvfs-mtp file-roller evince firefox mpv imv neofetch tree wget curl unzip p7zip xdg-user-dirs xdg-utils man-db man-pages
 
 # AUR packages (with yay - installed automatically)
 yay -S --needed hyprpicker swaylock-effects wlogout nordic-theme hyprshot wl-clip-persist wlsunset
@@ -283,11 +283,6 @@ For non-Arch users, please install the dependencies manually and then copy the c
 <img src="screenshots/05-wiremix-tui.png" width="30%" alt="Wiremix TUI">
 
 *Rofi launcher, btop system monitor, and wiremix audio mixer - all with Nord theming*
-
-### Network Management
-<img src="screenshots/06-impala-tui.png" width="60%" alt="Impala Network TUI">
-
-*Impala TUI network manager for terminal-based network configuration*
 
 </div>
 
