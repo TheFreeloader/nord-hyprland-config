@@ -63,20 +63,40 @@ install_themes() {
     log "Themes installed successfully"
 }
 
-# Install Graphite theme via yay
+# Install Graphite theme via git (faster than AUR)
 install_graphite_theme() {
-    log "Installing Graphite Nord GTK theme via yay..."
+    local graphite_theme_dir="$HOME/.themes/Graphite-nord-Dark"
     
-    # Install the specific Nord variant
-    if command -v yay &> /dev/null; then
-        if yay -S --noconfirm graphite-gtk-theme-nord-git; then
-            log "Graphite Nord theme installed successfully via yay"
-            return 0
+    if [[ ! -d "$graphite_theme_dir" ]]; then
+        log "Installing Graphite Nord theme via git (faster than AUR)..."
+        
+        # Create temporary directory
+        local temp_dir=$(mktemp -d)
+        
+        # Download Graphite theme
+        if command -v git &> /dev/null; then
+            git clone https://github.com/vinceliuice/Graphite-gtk-theme.git "$temp_dir/Graphite"
+            
+            # Remove git metadata to avoid permission issues
+            rm -rf "$temp_dir/Graphite/.git"
+            
+            # Install the theme with nord and dark tweaks
+            cd "$temp_dir/Graphite"
+            
+            if [[ -f "./install.sh" ]]; then
+                log "Installing Graphite with nord and dark tweaks..."
+                ./install.sh --dest "$HOME/.themes" --color dark --tweaks nord
+                ./install.sh --dest "$HOME/.local/share/themes" --color dark --tweaks nord 2>/dev/null || true
+                log "Graphite nord dark theme installed successfully"
+            fi
+            
+            # Cleanup
+            rm -rf "$temp_dir"
         else
-            warn "Failed to install Graphite Nord theme via yay"
+            warn "Git not found. Please install git first"
         fi
     else
-        warn "yay not found, cannot install Graphite theme"
+        log "Graphite nord theme already exists"
     fi
 }
 
