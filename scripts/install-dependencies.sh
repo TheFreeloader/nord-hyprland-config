@@ -262,6 +262,7 @@ install_arch_packages() {
         "wl-clip-persist"
         "wlsunset"
         "sddm-theme-corners-git"
+        "sddm-theme-sugar-candy"
     )
     
     # Update system
