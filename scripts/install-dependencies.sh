@@ -249,6 +249,8 @@ install_arch_packages() {
         "gtk-engines"
         "gtk2-engines-adwaita"
         "lxappearance"
+        "sddm"
+        "sddm-kcm"
     )
     
     local aur_only_packages=(
@@ -259,6 +261,7 @@ install_arch_packages() {
         "hyprshot"
         "wl-clip-persist"
         "wlsunset"
+        "sddm-theme-corners-git"
     )
     
     # Update system
