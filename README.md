@@ -2,7 +2,7 @@
 
 A beautiful Nord-themed Hyprland configuration with automatic installation for Arch Linux.
 
-> **Special thanks to [omarchy](https://github.com/omarchy) for the inspiration and Nord wallpaper (`omarchy-nord-1.png`) included in this configuration.** ❄️
+> **Special thanks to [omarchy](https://github.com/basecamp/omarchy) for the inspiration and Nord wallpaper (`omarchy-nord-1.png`) included in this configuration.** ❄️
 
 ## 🚀 Quick Installation
 
