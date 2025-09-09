@@ -63,59 +63,79 @@ install_themes() {
     log "Themes installed successfully"
 }
 
-# Download and install Nordic theme (if not present)
-install_nordic_theme() {
-    local nordic_theme_dir="$HOME/.themes/Nordic"
+# Install Graphite theme via yay
+install_graphite_theme() {
+    log "Installing Graphite Nord GTK theme via yay..."
     
-    # Check if Nordic theme is already installed via package manager
-    if pacman -Q nordic-theme &> /dev/null; then
-        log "Nordic theme is already installed via pacman"
-        
-        # Copy from system location to user location if needed
-        if [[ -d "/usr/share/themes/Nordic" && ! -d "$nordic_theme_dir" ]]; then
-            cp -r "/usr/share/themes/Nordic" "$HOME/.themes/"
-            cp -r "/usr/share/themes/Nordic" "$HOME/.local/share/themes/" 2>/dev/null || true
-            log "Nordic theme copied to user directories"
-        fi
-    elif [[ ! -d "$nordic_theme_dir" ]]; then
-        log "Downloading Nordic GTK theme..."
-        
-        # Create temporary directory
-        local temp_dir=$(mktemp -d)
-        
-        # Download Nordic theme
-        if command -v git &> /dev/null; then
-            git clone https://github.com/EliverLara/Nordic.git "$temp_dir/Nordic"
-            
-            # Copy theme
-            cp -r "$temp_dir/Nordic" "$HOME/.themes/"
-            cp -r "$temp_dir/Nordic" "$HOME/.local/share/themes/"
-            
-            # Cleanup
-            rm -rf "$temp_dir"
-            
-            log "Nordic theme installed successfully"
+    # Install the specific Nord variant
+    if command -v yay &> /dev/null; then
+        if yay -S --noconfirm graphite-gtk-theme-nord-git; then
+            log "Graphite Nord theme installed successfully via yay"
+            return 0
         else
-            warn "Git not found. Please install Nordic theme manually"
-            warn "https://github.com/EliverLara/Nordic"
+            warn "Failed to install Graphite Nord theme via yay"
         fi
     else
-        log "Nordic theme already exists"
+        warn "yay not found, cannot install Graphite theme"
     fi
 }
 
-# Install Papirus icon theme (if not present)
+# Install Papirus icon theme via pacman/yay
 install_papirus_icons() {
+    log "Installing Papirus icon theme..."
+    
+    # Try pacman first, then yay
     if pacman -Q papirus-icon-theme &> /dev/null; then
         log "Papirus icon theme is already installed"
-        
-        # Set Nordic color variant if papirus-folders is available
+    elif pacman -S --noconfirm papirus-icon-theme 2>/dev/null; then
+        log "Papirus icon theme installed via pacman"
+    elif command -v yay &> /dev/null && yay -S --noconfirm papirus-icon-theme; then
+        log "Papirus icon theme installed via yay"
+    else
+        warn "Failed to install Papirus icon theme"
+    fi
+    
+    # Set Nordic color variant if papirus-folders is available
+    if command -v papirus-folders &> /dev/null; then
+        papirus-folders -C nordic --theme Papirus-Dark || warn "Failed to set Nordic color scheme"
+        log "Papirus icons set to Nordic color scheme"
+    elif command -v yay &> /dev/null; then
+        # Install papirus-folders from AUR
+        yay -S --noconfirm papirus-folders-git 2>/dev/null || yay -S --noconfirm papirus-folders 2>/dev/null || true
         if command -v papirus-folders &> /dev/null; then
             papirus-folders -C nordic --theme Papirus-Dark || warn "Failed to set Nordic color scheme"
             log "Papirus icons set to Nordic color scheme"
         fi
-    else
-        warn "Papirus icon theme not found. Please install it manually with: pacman -S papirus-icon-theme"
+    fi
+}
+
+# Install fonts via pacman/yay
+install_fonts() {
+    log "Installing fonts..."
+    
+    local fonts=(
+        "ttf-jetbrains-mono"
+        "ttf-jetbrains-mono-nerd"
+        "noto-fonts"
+        "noto-fonts-emoji"
+    )
+    
+    for font in "${fonts[@]}"; do
+        if pacman -Q "$font" &> /dev/null; then
+            log "$font is already installed"
+        elif pacman -S --noconfirm "$font" 2>/dev/null; then
+            log "$font installed via pacman"
+        elif command -v yay &> /dev/null && yay -S --noconfirm "$font" 2>/dev/null; then
+            log "$font installed via yay"
+        else
+            warn "Failed to install $font"
+        fi
+    done
+    
+    # Refresh font cache
+    if command -v fc-cache &> /dev/null; then
+        fc-cache -fv
+        log "Font cache refreshed"
     fi
 }
 
@@ -129,7 +149,7 @@ configure_gtk_settings() {
     
     cat > "$gtk3_config" << EOF
 [Settings]
-gtk-theme-name=Nordic
+gtk-theme-name=Graphite-nord-Dark
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=JetBrains Mono 10
 gtk-cursor-theme-name=Nordic-cursors
@@ -153,7 +173,7 @@ EOF
     
     cat > "$gtk4_config" << EOF
 [Settings]
-gtk-theme-name=Nordic
+gtk-theme-name=Graphite-nord-Dark
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=JetBrains Mono 10
 gtk-cursor-theme-name=Nordic-cursors
@@ -163,7 +183,7 @@ EOF
     
     # GTK2 settings
     cat > "$HOME/.gtkrc-2.0" << EOF
-gtk-theme-name="Nordic"
+gtk-theme-name="Graphite-nord-Dark"
 gtk-icon-theme-name="Papirus-Dark"
 gtk-font-name="JetBrains Mono 10"
 gtk-cursor-theme-name="Nordic-cursors"
@@ -183,33 +203,23 @@ EOF
     log "GTK settings configured"
 }
 
-# Install cursor theme
+# Install cursor theme via yay
 install_cursor_theme() {
     log "Installing Nordic cursor theme..."
     
-    local cursor_theme_dir="$HOME/.local/share/icons/Nordic-cursors"
-    
-    if [[ ! -d "$cursor_theme_dir" ]]; then
-        local temp_dir=$(mktemp -d)
-        
-        if command -v git &> /dev/null; then
-            git clone https://github.com/alvatip/Nordzy-cursors.git "$temp_dir/cursors"
-            
-            # Create icons directory
-            mkdir -p "$HOME/.local/share/icons"
-            
-            # Copy cursor theme (assuming Nordzy has a Nordic variant)
-            if [[ -d "$temp_dir/cursors/Nordzy-cursors" ]]; then
-                cp -r "$temp_dir/cursors/Nordzy-cursors" "$HOME/.local/share/icons/Nordic-cursors"
-            fi
-            
-            rm -rf "$temp_dir"
-            log "Nordic cursor theme installed"
+    # Try to install Nordic/Nordzy cursors via yay
+    if command -v yay &> /dev/null; then
+        if yay -S --noconfirm nordzy-cursors-git || yay -S --noconfirm nordzy-cursors; then
+            log "Nordic cursor theme installed successfully via yay"
+            return 0
+        elif yay -S --noconfirm nordic-cursors-git || yay -S --noconfirm nordic-cursors; then
+            log "Nordic cursor theme installed successfully via yay"
+            return 0
         else
-            warn "Git not found. Please install cursor theme manually"
+            warn "Failed to install Nordic cursor theme via yay"
         fi
     else
-        log "Nordic cursor theme already exists"
+        warn "yay not found, cannot install Nordic cursor theme"
     fi
 }
 
@@ -228,7 +238,8 @@ main() {
     
     # Install themes
     install_themes
-    install_nordic_theme
+    install_fonts
+    install_graphite_theme
     install_papirus_icons
     install_cursor_theme
     
@@ -240,7 +251,7 @@ main() {
     # Post-installation notes
     echo ""
     echo -e "${BLUE}Theme installation notes:${NC}"
-    echo "• GTK theme: Nordic (dark variant)"
+    echo "• GTK theme: Graphite Nord Dark"
     echo "• Icon theme: Papirus-Dark with Nordic colors"
     echo "• Cursor theme: Nordic cursors"
     echo "• Font: JetBrains Mono"

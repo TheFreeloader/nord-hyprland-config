@@ -243,6 +243,12 @@ install_arch_packages() {
         "xdg-utils"
         "man-db"
         "man-pages"
+        "gtk2"
+        "gtk3"
+        "gtk4"
+        "gtk-engines"
+        "gtk2-engines-adwaita"
+        "lxappearance"
     )
     
     local aur_only_packages=(
