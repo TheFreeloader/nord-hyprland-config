@@ -1,0 +1,115 @@
+{
+  "reload_style_on_change": true,
+  "layer": "top",
+  "position": "top",
+  "spacing": 0,
+  "height": 26,
+
+  "modules-left": ["custom/launcher", "hyprland/workspaces"],
+  "modules-center": ["clock", "custom/update"],
+  "modules-right": [
+    "tray",
+    "bluetooth",
+    "network",
+    "pulseaudio",
+    "cpu",
+    "battery"
+  ],
+
+  // --- Left ---
+  "custom/launcher": {
+    "format": "",
+    "on-click": "rofi -show drun",
+    "tooltip-format": "App Launcher (rofi)"
+  },
+
+  "hyprland/workspaces": {
+    "on-click": "activate",
+    "format": "{icon}",
+    "format-icons": {
+      "default": "",
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "active": "󱓻"
+    },
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    }
+  },
+
+  // --- Center ---
+  "clock": {
+    "format": "{:%A %H:%M}",
+    "format-alt": "{:%d %B %Y}",
+    "tooltip": false
+  },
+  
+  // --- Right ---
+"pulseaudio": {
+  "format": "{icon} {volume}%",
+  "format-muted": "󰝟",
+  "scroll-step": 5,
+  "tooltip-format": "Volume: {volume}%",
+  "on-click": "alacritty --class=Wiremix -e wiremix",
+  "on-click-right": "pamixer -t",
+  "format-icons": {
+    "default": ["", "", ""]
+  }
+},
+
+  "cpu": {
+    "interval": 5,
+    "format": "󰍛 {usage}%",
+    "on-click": "alacritty -e btop"
+  },
+
+  "network": {
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "format": "{icon}",
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰀂",
+    "format-disconnected": "󰖪",
+    "tooltip-format-wifi": "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-ethernet": "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-disconnected": "Disconnected",
+    "interval": 3,
+    "spacing": 1,
+    "on-click": "alacritty --class=Impala -e impala"
+  },
+
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-icons": {
+      "default": ["󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"],
+      "charging": ["󰢜","󰂆","󰂇","󰂈","󰢝","󰂉","󰢞","󰂊","󰂋","󰂅"]
+    },
+    "format-full": "󰂅",
+    "tooltip-format": "{capacity}% - {power:>1.0f}W",
+    "interval": 5,
+    "states": {
+      "warning": 20,
+      "critical": 10
+    }
+  },
+
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "󰂲",
+    "format-connected": "",
+    "tooltip-format": "Devices connected: {num_connections}",
+    "on-click": "blueberry"
+  },
+
+  "tray": {
+    "icon-size": 14,
+    "spacing": 8
+  }
+}
+

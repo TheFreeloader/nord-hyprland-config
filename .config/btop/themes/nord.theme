@@ -1,0 +1,35 @@
+# Nord Theme for btop
+# Matches your Alacritty config
+
+# Main background, text, and highlight colors
+theme[main_bg]="#2e3440"
+theme[main_fg]="#d8dee9"
+theme[title]="#81a1c1"
+theme[hi_fg]="#eceff4"
+theme[selected_bg]="#4c566a"
+theme[selected_fg]="#eceff4"
+theme[disabled]="#a5abb6"
+
+# CPU colors
+theme[cpu_box]="#81a1c1"
+theme[cpu_bg]="#2e3440"
+theme[cpu_fg]="#d8dee9"
+theme[cpu_hi]="#88c0d0"
+
+# Mem colors
+theme[mem_box]="#a3be8c"
+theme[mem_bg]="#2e3440"
+theme[mem_fg]="#d8dee9"
+theme[mem_hi]="#ebcb8b"
+
+# Net colors
+theme[net_box]="#b48ead"
+theme[net_bg]="#2e3440"
+theme[net_fg]="#d8dee9"
+theme[net_hi]="#88c0d0"
+
+# Proc colors
+theme[proc_box]="#81a1c1"
+theme[proc_bg]="#2e3440"
+theme[proc_fg]="#d8dee9"
+theme[proc_hi]="#ebcb8b"
