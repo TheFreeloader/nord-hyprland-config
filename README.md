@@ -2,6 +2,8 @@
 
 A beautiful Nord-themed Hyprland configuration with automatic installation for Arch Linux.
 
+> **Special thanks to [omarchy](https://github.com/omarchy) for the inspiration and Nord wallpaper (`omarchy-nord-1.png`) included in this configuration.** ❄️
+
 ## 🚀 Quick Installation
 
 ```bash
@@ -250,7 +252,15 @@ For non-Arch users, please install the dependencies manually and then copy the c
 - Check PipeWire status: `systemctl --user status pipewire`
 - Restart audio: `systemctl --user restart pipewire`
 
-## 📄 License
+## � Credits
+
+- **[omarchy](https://github.com/omarchy)** - For the beautiful Nord wallpaper (`omarchy-nord-1.png`) and Nord theme inspiration
+- **[Nord Project](https://www.nordtheme.com/)** - For the amazing Nord color palette
+- **[Hyprland](https://hyprland.org/)** - For the fantastic Wayland compositor
+- **[vinceliuice](https://github.com/vinceliuice)** - For the Graphite GTK theme
+- **Arch Linux Community** - For maintaining the AUR packages used in this setup
+
+## �📄 License
 
 This configuration is provided as-is for personal use. Individual components may have their own licenses.
 
