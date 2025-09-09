@@ -352,7 +352,7 @@ All keybindings use **Super (Windows key)** as the main modifier.
 
 ## 🙏 Credits
 
-- **[omarchy](https://github.com/omarchy)** - For the beautiful Nord wallpaper (`omarchy-nord-1.png`) and Nord theme inspiration
+- **[omarchy](https://github.com/basecamp/omarchy)** - For the beautiful Nord wallpaper (`omarchy-nord-1.png`) and Nord theme inspiration
 - **[Nord Project](https://www.nordtheme.com/)** - For the amazing Nord color palette
 - **[Hyprland](https://hyprland.org/)** - For the fantastic Wayland compositor
 - **[vinceliuice](https://github.com/vinceliuice)** - For the Graphite GTK theme
