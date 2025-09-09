@@ -267,6 +267,30 @@ For non-Arch users, please install the dependencies manually and then copy the c
 - Check PipeWire status: `systemctl --user status pipewire`
 - Restart audio: `systemctl --user restart pipewire`
 
+## 📸 Screenshots
+
+<div align="center">
+
+### Desktop Overview
+<img src="screenshots/01-desktop-overview.png" width="45%" alt="Desktop Overview">
+<img src="screenshots/02-waybar-details.png" width="45%" alt="Waybar Details">
+
+*Clean Nord-themed desktop with Hyprland window manager and TUI-focused Waybar*
+
+### Application Launcher & TUI Tools
+<img src="screenshots/03-rofi-launcher.png" width="30%" alt="Rofi Launcher">
+<img src="screenshots/04-terminal-tui.png" width="30%" alt="Terminal TUI">
+<img src="screenshots/05-wiremix-tui.png" width="30%" alt="Wiremix TUI">
+
+*Rofi launcher, btop system monitor, and wiremix audio mixer - all with Nord theming*
+
+### Network Management
+<img src="screenshots/06-impala-tui.png" width="60%" alt="Impala Network TUI">
+
+*Impala TUI network manager for terminal-based network configuration*
+
+</div>
+
 ## ⌨️ Keybindings
 
 All keybindings use **Super (Windows key)** as the main modifier.
@@ -341,24 +365,6 @@ This configuration is provided as-is for personal use. Individual components may
 ## 🤝 Contributing
 
 Feel free to submit issues, feature requests, or pull requests to improve this configuration.
-
-## 📸 Screenshots
-
-### Desktop Overview
-![Desktop Overview](screenshots/01-desktop-overview.png)
-*Clean Nord-themed desktop with Hyprland window manager*
-
-### Waybar Status Bar
-![Waybar Details](screenshots/02-waybar-details.png)
-*Nord-themed Waybar with TUI-focused modules*
-
-### Rofi Application Launcher
-![Rofi Launcher](screenshots/03-rofi-launcher.png)
-*Beautiful Nord-themed Rofi launcher*
-
-### Terminal & TUI Applications
-![Terminal TUI](screenshots/04-terminal-tui.png)
-*TUI applications like wiremix, btop, and impala in action*
 
 ---
 
