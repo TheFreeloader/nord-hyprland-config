@@ -267,7 +267,66 @@ For non-Arch users, please install the dependencies manually and then copy the c
 - Check PipeWire status: `systemctl --user status pipewire`
 - Restart audio: `systemctl --user restart pipewire`
 
-## � Credits
+## ⌨️ Keybindings
+
+All keybindings use **Super (Windows key)** as the main modifier.
+
+### 🚀 Applications
+| Key | Action |
+|-----|--------|
+| `Super + Enter` | Terminal (Alacritty) |
+| `Super + Space` | App Launcher (Rofi) |
+| `Super + F` | File Manager (Nautilus) |
+| `Super + B` | Browser (Chromium) |
+| `Super + Shift + Space` | Toggle Waybar |
+
+### 🪟 Window Management
+| Key | Action |
+|-----|--------|
+| `Super + W` | Close active window |
+| `Super + V` | Toggle floating mode |
+| `Super + J` | Toggle window split |
+| `Super + P` | Enable pseudo mode |
+| `Super + M` | Exit Hyprland |
+
+### 🔄 Navigation
+| Key | Action |
+|-----|--------|
+| `Super + Arrow Keys` | Move focus between windows |
+| `Super + 1-9,0` | Switch to workspace 1-10 |
+| `Super + Shift + 1-9,0` | Move window to workspace 1-10 |
+| `Super + Tab` | Next workspace |
+| `Super + Shift + Tab` | Previous workspace |
+| `Super + S` | Toggle scratchpad |
+| `Super + Shift + S` | Move window to scratchpad |
+
+### 📷 Screenshots
+| Key | Action |
+|-----|--------|
+| `Print` | Screenshot region |
+| `Shift + Print` | Screenshot window |
+| `Ctrl + Print` | Screenshot full display |
+
+### 🎵 Media & System
+| Key | Action |
+|-----|--------|
+| `Volume Up/Down` | Adjust volume (5%) |
+| `Mute` | Toggle audio mute |
+| `Mic Mute` | Toggle microphone mute |
+| `Brightness Up/Down` | Adjust screen brightness |
+| `Media Next/Prev` | Media player controls |
+| `Play/Pause` | Toggle media playback |
+
+### 🖱️ Mouse
+| Action | Result |
+|--------|--------|
+| `Super + Left Click + Drag` | Move window |
+| `Super + Right Click + Drag` | Resize window |
+| `Super + Scroll` | Switch workspaces |
+
+> **💡 Tip**: TUI applications (wiremix, impala, btop) can be accessed by clicking their respective Waybar modules!
+
+## 🙏 Credits
 
 - **[omarchy](https://github.com/omarchy)** - For the beautiful Nord wallpaper (`omarchy-nord-1.png`) and Nord theme inspiration
 - **[Nord Project](https://www.nordtheme.com/)** - For the amazing Nord color palette
