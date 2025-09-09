@@ -51,6 +51,49 @@ setup_wallpapers() {
     log "Wallpapers directory setup complete"
 }
 
+# Configure SDDM theme
+setup_sddm_theme() {
+    log "Configuring SDDM theme..."
+    
+    # Check if SDDM is installed
+    if ! pacman -Q sddm &> /dev/null; then
+        warn "SDDM is not installed, skipping theme configuration"
+        return
+    fi
+    
+    # Create SDDM configuration directory if it doesn't exist
+    if [[ ! -d "/etc/sddm.conf.d" ]]; then
+        sudo mkdir -p /etc/sddm.conf.d
+    fi
+    
+    # Configure Sugar Candy theme if available
+    if [[ -d "/usr/share/sddm/themes/sugar-candy" ]]; then
+        log "Configuring Sugar Candy SDDM theme..."
+        
+        # Create SDDM configuration for Sugar Candy theme
+        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null << EOF
+[Theme]
+Current=sugar-candy
+EOF
+        
+        log "Sugar Candy theme configured for SDDM"
+    elif [[ -d "/usr/share/sddm/themes/corners" ]]; then
+        log "Configuring Corners SDDM theme as fallback..."
+        
+        # Create SDDM configuration for Corners theme
+        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null << EOF
+[Theme]
+Current=corners
+EOF
+        
+        log "Corners theme configured for SDDM"
+    else
+        warn "No SDDM themes found. Make sure theme packages are installed."
+    fi
+    
+    log "SDDM theme configuration complete"
+}
+
 # Setup user directories
 setup_user_directories() {
     log "Creating user directories..."
@@ -230,6 +273,7 @@ main() {
     log "Starting post-installation setup..."
     
     setup_wallpapers
+    setup_sddm_theme
     setup_user_directories
     setup_environment
     setup_fonts
