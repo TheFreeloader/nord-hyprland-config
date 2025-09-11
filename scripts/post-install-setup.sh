@@ -502,8 +502,9 @@ main() {
     setup_sddm_theme
     setup_user_directories
     setup_environment
-    setup_uwsm
-    setup_shell_profile
+    # Skip session management - session is managed externally
+    # setup_uwsm
+    # setup_shell_profile
     setup_fonts
     setup_autostart
     create_scripts
@@ -518,18 +519,16 @@ main() {
     echo "• Utility scripts: ~/.local/bin/"
     echo "• Environment variables: ~/.config/environment.d/hyprland.conf"
     echo "• Autostart applications configured"
-    echo "• Shell profile configured for auto-start Hyprland"
+    echo "• Session management: Handled externally"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "1. Log out and log back in to TTY1"
-    echo "2. Hyprland will start automatically!"
-    echo "3. Alternatively: Select Hyprland at SDDM login screen"
-    echo "4. Run 'change-wallpaper' to set a wallpaper"
-    echo "5. Take a screenshot with Super+Shift+S"
+    echo "1. Start Hyprland through your external session manager"
+    echo "2. Run 'change-wallpaper' to set a wallpaper"
+    echo "3. Take a screenshot with Super+Shift+S"
+    echo "4. Customize the config files in ~/.config/ as needed"
     echo ""
-    echo -e "${GREEN}Auto-start info:${NC}"
-    echo "• TTY1 login → Hyprland starts automatically"
-    echo "• Manual start: Run 'start-hyprland' command"
+    echo -e "${GREEN}Manual start option:${NC}"
+    echo "• Run 'start-hyprland' command if needed"
     echo ""
     echo "Enjoy your Nord Hyprland setup! 🎉"
 }
