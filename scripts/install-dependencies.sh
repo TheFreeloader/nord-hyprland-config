@@ -242,7 +242,6 @@ install_arch_packages() {
         "gtk3"
         "gtk4"
         "gtk-engines"
-        "gtk2-engines-adwaita"
         "lxappearance"
         "sddm"
         "sddm-kcm"
