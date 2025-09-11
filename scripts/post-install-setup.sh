@@ -56,8 +56,6 @@ create_all_directories() {
     
     # User configuration directories
     ensure_directory "$HOME/.config" false "user config directory"
-    ensure_directory "$HOME/.config/environment.d" false "environment config directory"
-    ensure_directory "$HOME/.config/uwsm" false "UWSM config directory"
     
     # User local directories
     ensure_directory "$HOME/.local" false "user local directory"
@@ -65,7 +63,6 @@ create_all_directories() {
     ensure_directory "$HOME/.local/share" false "user share directory"
     ensure_directory "$HOME/.local/share/applications" false "user applications directory"
     ensure_directory "$HOME/.local/share/fonts" false "user fonts directory"
-    ensure_directory "$HOME/.local/share/wayland-sessions" false "wayland sessions directory"
     
     # User theme directories
     ensure_directory "$HOME/.themes" false "user themes directory"
@@ -82,9 +79,6 @@ create_all_directories() {
     ensure_directory "$HOME/Music" false "Music directory"
     ensure_directory "$HOME/Videos" false "Videos directory"
     
-    # System directories (with sudo)
-    ensure_directory "/etc/sddm.conf.d" true "SDDM config directory"
-    
     log "All directories verified/created successfully"
 }
 
@@ -95,67 +89,7 @@ setup_wallpapers() {
     local wallpaper_dir="$HOME/Pictures/Wallpapers"
     mkdir -p "$wallpaper_dir"
     
-    # Copy the existing Nord wallpaper from .themes directory
-    local source_wallpaper="$HOME/.themes/nord/background/omarchy-nord-1.png"
-    local dest_wallpaper="$wallpaper_dir/omarchy-nord-1.png"
-    
-    if [[ -f "$source_wallpaper" ]]; then
-        log "Copying Nord wallpaper from .themes directory..."
-        cp "$source_wallpaper" "$dest_wallpaper"
-        
-        # Also create a symlink as the default wallpaper
-        ln -sf "$dest_wallpaper" "$wallpaper_dir/nord-default.png"
-        
-        log "Nord wallpaper set up successfully"
-    else
-        warn "Nord wallpaper not found at $source_wallpaper"
-        warn "Make sure the .themes directory is installed first"
-    fi
-    
     log "Wallpapers directory setup complete"
-}
-
-# Configure SDDM theme
-setup_sddm_theme() {
-    log "Configuring SDDM theme..."
-    
-    # Check if SDDM is installed
-    if ! pacman -Q sddm &> /dev/null; then
-        warn "SDDM is not installed, skipping theme configuration"
-        return
-    fi
-    
-    # Create SDDM configuration directory if it doesn't exist
-    if [[ ! -d "/etc/sddm.conf.d" ]]; then
-        sudo mkdir -p /etc/sddm.conf.d
-    fi
-    
-    # Configure Sugar Candy theme if available
-    if [[ -d "/usr/share/sddm/themes/sugar-candy" ]]; then
-        log "Configuring Sugar Candy SDDM theme..."
-        
-        # Create SDDM configuration for Sugar Candy theme
-        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null << EOF
-[Theme]
-Current=sugar-candy
-EOF
-        
-        log "Sugar Candy theme configured for SDDM"
-    elif [[ -d "/usr/share/sddm/themes/corners" ]]; then
-        log "Configuring Corners SDDM theme as fallback..."
-        
-        # Create SDDM configuration for Corners theme
-        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null << EOF
-[Theme]
-Current=corners
-EOF
-        
-        log "Corners theme configured for SDDM"
-    else
-        warn "No SDDM themes found. Make sure theme packages are installed."
-    fi
-    
-    log "SDDM theme configuration complete"
 }
 
 # Setup user directories
@@ -174,111 +108,6 @@ setup_user_directories() {
     done
     
     log "User directories created"
-}
-
-# Setup environment variables
-setup_environment() {
-    log "Setting up environment variables..."
-    
-    local env_file="$HOME/.config/environment.d/hyprland.conf"
-    mkdir -p "$(dirname "$env_file")"
-    
-    cat > "$env_file" << EOF
-# Hyprland Environment Variables
-XCURSOR_SIZE=24
-XCURSOR_THEME=Nordic-cursors
-
-# Qt theme
-QT_QPA_PLATFORMTHEME=qt5ct
-QT_STYLE_OVERRIDE=kvantum
-
-# GTK theme
-GTK_THEME=Nordic
-
-# XDG
-XDG_CURRENT_DESKTOP=Hyprland
-XDG_SESSION_DESKTOP=Hyprland
-XDG_SESSION_TYPE=wayland
-
-# Firefox
-MOZ_ENABLE_WAYLAND=1
-
-# Electron apps
-ELECTRON_OZONE_PLATFORM_HINT=wayland
-EOF
-    
-    log "Environment variables configured"
-}
-
-# Setup UWSM (Universal Wayland Session Manager)
-setup_uwsm() {
-    log "Configuring UWSM (Universal Wayland Session Manager)..."
-    
-    # Check if UWSM is installed
-    if ! command -v uwsm &> /dev/null; then
-        warn "UWSM is not installed, skipping UWSM configuration"
-        return
-    fi
-    
-    # Create UWSM configuration directory
-    local uwsm_config_dir="$HOME/.config/uwsm"
-    mkdir -p "$uwsm_config_dir"
-    
-    # Create UWSM configuration for Hyprland
-    cat > "$uwsm_config_dir/hyprland.conf" << EOF
-# UWSM Configuration for Hyprland
-# Universal Wayland Session Manager configuration
-
-[Session]
-Type=wayland
-Name=Hyprland
-Exec=Hyprland
-DesktopNames=Hyprland
-
-[Environment]
-# Wayland-specific environment variables
-WAYLAND_DISPLAY=wayland-1
-XDG_SESSION_TYPE=wayland
-XDG_SESSION_DESKTOP=Hyprland
-XDG_CURRENT_DESKTOP=Hyprland
-
-# Qt/GTK environment
-QT_QPA_PLATFORM=wayland
-GDK_BACKEND=wayland,x11
-CLUTTER_BACKEND=wayland
-
-# Firefox Wayland
-MOZ_ENABLE_WAYLAND=1
-
-# Electron Wayland
-ELECTRON_OZONE_PLATFORM_HINT=wayland
-
-# Cursor theme
-XCURSOR_THEME=Nordic-cursors
-XCURSOR_SIZE=24
-EOF
-
-    # Create desktop entry for UWSM Hyprland session
-    local desktop_entry_dir="$HOME/.local/share/wayland-sessions"
-    mkdir -p "$desktop_entry_dir"
-    
-    cat > "$desktop_entry_dir/hyprland-uwsm.desktop" << EOF
-[Desktop Entry]
-Name=Hyprland (UWSM)
-Comment=Hyprland session managed by UWSM
-Exec=uwsm start hyprland
-Type=Application
-Keywords=wm;tiling
-EOF
-
-    # Initialize UWSM for the user (if not already done)
-    if [[ ! -f "$HOME/.config/uwsm/user.conf" ]]; then
-        log "Initializing UWSM for user..."
-        uwsm finalize --user || warn "UWSM user initialization failed - this is normal on first install"
-    fi
-    
-    log "UWSM configuration completed"
-    log "You can now select 'Hyprland (UWSM)' at the login screen for better session management"
 }
 
 # Setup shell profile to auto-start Hyprland
@@ -499,9 +328,7 @@ main() {
     create_all_directories
     
     setup_wallpapers
-    setup_sddm_theme
     setup_user_directories
-    setup_environment
     # Skip session management - session is managed externally
     # setup_uwsm
     # setup_shell_profile
@@ -517,7 +344,6 @@ main() {
     echo "• Wallpapers directory: ~/Pictures/Wallpapers"
     echo "• Screenshots directory: ~/Pictures/Screenshots" 
     echo "• Utility scripts: ~/.local/bin/"
-    echo "• Environment variables: ~/.config/environment.d/hyprland.conf"
     echo "• Autostart applications configured"
     echo "• Session management: Handled externally"
     echo ""

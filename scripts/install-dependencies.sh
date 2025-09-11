@@ -211,19 +211,7 @@ select_aur_provider() {
             echo "sddm-theme-corners-git"
             return 0
             ;;
-        "nordic-cursors")
-            # Try multiple variants
-            if yay -Ss "^nordzy-cursors$" &> /dev/null; then
-                echo "nordzy-cursors"
-            elif yay -Ss "^nordic-cursors$" &> /dev/null; then
-                echo "nordic-cursors"  
-            elif yay -Ss "^nordzy-cursors-git$" &> /dev/null; then
-                echo "nordzy-cursors-git"
-            else
-                echo "nordzy-cursors"  # Default fallback
-            fi
-            return 0
-            ;;
+
     esac
     
     # For other packages, try exact match first

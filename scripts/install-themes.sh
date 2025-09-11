@@ -237,8 +237,6 @@ configure_gtk_settings() {
 gtk-theme-name=Graphite-nord-Dark
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=JetBrains Mono 10
-gtk-cursor-theme-name=Nordic-cursors
-gtk-cursor-theme-size=24
 gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
 gtk-button-images=0
@@ -261,8 +259,6 @@ EOF
 gtk-theme-name=Graphite-nord-Dark
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=JetBrains Mono 10
-gtk-cursor-theme-name=Nordic-cursors
-gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
 EOF
     
@@ -271,8 +267,6 @@ EOF
 gtk-theme-name="Graphite-nord-Dark"
 gtk-icon-theme-name="Papirus-Dark"
 gtk-font-name="JetBrains Mono 10"
-gtk-cursor-theme-name="Nordic-cursors"
-gtk-cursor-theme-size=24
 gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
 gtk-button-images=0
@@ -288,25 +282,7 @@ EOF
     log "GTK settings configured"
 }
 
-# Install cursor theme via yay
-install_cursor_theme() {
-    log "Installing Nordic cursor theme..."
-    
-    # Try to install Nordic/Nordzy cursors via yay
-    if command -v yay &> /dev/null; then
-        if yay -S --noconfirm nordzy-cursors-git || yay -S --noconfirm nordzy-cursors; then
-            log "Nordic cursor theme installed successfully via yay"
-            return 0
-        elif yay -S --noconfirm nordic-cursors-git || yay -S --noconfirm nordic-cursors; then
-            log "Nordic cursor theme installed successfully via yay"
-            return 0
-        else
-            warn "Failed to install Nordic cursor theme via yay"
-        fi
-    else
-        warn "yay not found, cannot install Nordic cursor theme"
-    fi
-}
+
 
 # Main function
 main() {
@@ -346,7 +322,6 @@ main() {
     install_fonts
     install_graphite_theme
     install_papirus_icons
-    install_cursor_theme
     
     # Configure GTK settings
     configure_gtk_settings
@@ -358,7 +333,6 @@ main() {
     echo -e "${BLUE}Theme installation notes:${NC}"
     echo "• GTK theme: Graphite Nord Dark"
     echo "• Icon theme: Papirus-Dark with Nordic colors"
-    echo "• Cursor theme: Nordic cursors"
     echo "• Font: JetBrains Mono"
     echo ""
     echo "You may need to restart applications or re-login for themes to take effect"

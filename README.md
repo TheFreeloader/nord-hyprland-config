@@ -49,8 +49,7 @@ chmod +x install.sh
 
 ### Themes
 - **GTK Theme**: Nordic (dark variant)
-- **Icon Theme**: Papirus-Dark with Nordic colors  
-- **Cursor Theme**: Nordic cursors
+- **Icon Theme**: Papirus-Dark with Nordic colors
 - **Fonts**: JetBrains Mono Nerd Font (already installed)
 
 ## 🎯 System Requirements

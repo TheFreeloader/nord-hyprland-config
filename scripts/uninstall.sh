@@ -102,9 +102,6 @@ remove_themes() {
     rm -rf "$HOME/.themes/Nordic" 2>/dev/null || true
     rm -rf "$HOME/.local/share/themes/Nordic" 2>/dev/null || true
     
-    # Remove cursor theme
-    rm -rf "$HOME/.local/share/icons/Nordic-cursors" 2>/dev/null || true
-    
     # Remove GTK configurations
     rm -f "$HOME/.config/gtk-3.0/settings.ini" 2>/dev/null || true
     rm -f "$HOME/.config/gtk-4.0/settings.ini" 2>/dev/null || true
