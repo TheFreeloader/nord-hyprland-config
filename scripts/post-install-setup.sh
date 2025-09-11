@@ -314,6 +314,122 @@ setup_xdg_dirs() {
     fi
 }
 
+# Setup SDDM display manager and theme
+setup_sddm() {
+    log "Setting up SDDM display manager..."
+    
+    # Check if SDDM is installed
+    if ! pacman -Q sddm &> /dev/null; then
+        warn "SDDM is not installed, skipping SDDM setup"
+        return
+    fi
+    
+    # Create SDDM configuration directory if it doesn't exist
+    ensure_directory "/etc/sddm.conf.d" true "SDDM config directory"
+    
+    # Configure SDDM theme
+    local theme_configured=false
+    
+    # Try to configure Sugar Candy theme first
+    if [[ -d "/usr/share/sddm/themes/sugar-candy" ]]; then
+        log "Configuring Sugar Candy SDDM theme..."
+        
+        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null << 'EOF'
+[Theme]
+Current=sugar-candy
+
+[General]
+HaltCommand=/usr/bin/systemctl poweroff
+RebootCommand=/usr/bin/systemctl reboot
+Numlock=on
+
+[Autologin]
+Relogin=false
+Session=
+User=
+
+[Users]
+MaximumUid=60000
+MinimumUid=500
+EOF
+        
+        log "Sugar Candy theme configured for SDDM"
+        theme_configured=true
+    
+    # Try Corners theme as fallback
+    elif [[ -d "/usr/share/sddm/themes/corners" ]]; then
+        log "Configuring Corners SDDM theme as fallback..."
+        
+        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null << 'EOF'
+[Theme]
+Current=corners
+
+[General]
+HaltCommand=/usr/bin/systemctl poweroff
+RebootCommand=/usr/bin/systemctl reboot
+Numlock=on
+
+[Autologin]
+Relogin=false
+Session=
+User=
+
+[Users]
+MaximumUid=60000
+MinimumUid=500
+EOF
+        
+        log "Corners theme configured for SDDM"
+        theme_configured=true
+    
+    else
+        # Create basic SDDM config without theme
+        log "No SDDM themes found, using default configuration..."
+        
+        sudo tee /etc/sddm.conf.d/default.conf > /dev/null << 'EOF'
+[General]
+HaltCommand=/usr/bin/systemctl poweroff
+RebootCommand=/usr/bin/systemctl reboot
+Numlock=on
+
+[Autologin]
+Relogin=false
+Session=
+User=
+
+[Users]
+MaximumUid=60000
+MinimumUid=500
+EOF
+        
+        warn "No SDDM themes found. Install sddm-theme-sugar-candy or sddm-theme-corners-git for better appearance"
+    fi
+    
+    # Enable and start SDDM service
+    log "Enabling SDDM service..."
+    if sudo systemctl enable sddm.service; then
+        log "SDDM service enabled successfully"
+    else
+        error "Failed to enable SDDM service"
+        return 1
+    fi
+    
+    # Disable other display managers that might conflict
+    local other_dms=("gdm" "lightdm" "lxdm" "xdm")
+    for dm in "${other_dms[@]}"; do
+        if systemctl is-enabled "$dm.service" &> /dev/null; then
+            log "Disabling conflicting display manager: $dm"
+            sudo systemctl disable "$dm.service" || true
+        fi
+    done
+    
+    log "SDDM setup completed successfully"
+    
+    if [[ "$theme_configured" == true ]]; then
+        log "SDDM theme configured - you'll see it after reboot"
+    fi
+}
+
 # Setup Chromebook-specific configurations
 setup_chromebook_support() {
     log "Setting up Chromebook hardware support..."
@@ -525,6 +641,7 @@ main() {
     setup_autostart
     create_scripts
     setup_xdg_dirs
+    setup_sddm
     setup_chromebook_support
     
     log "Post-installation setup completed!"

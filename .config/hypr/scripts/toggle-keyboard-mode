@@ -23,7 +23,7 @@ if [[ "$CURRENT_MODE" == "normal" ]]; then
     cp "$CHROMEBOOK_INPUT" "$CURRENT_INPUT"
     echo "chromebook" > "$MODE_FILE"
     NEW_MODE="Chromebook"
-    DESCRIPTION="Alt/Search swapped, natural scrolling, gestures enabled"
+    DESCRIPTION="Alt/Search swapped, natural scrolling enabled"
 else
     # Switch to Normal mode  
     cp "$NORMAL_INPUT" "$CURRENT_INPUT"
