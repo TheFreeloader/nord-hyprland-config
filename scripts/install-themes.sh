@@ -12,15 +12,38 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Parent directory (project root) - more robust resolution
-if [[ -n "$SCRIPT_DIR" && -d "$SCRIPT_DIR" ]]; then
-    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd 2>/dev/null)"
+# Script directory - with robust error handling for corrupted pwd
+SCRIPT_DIR=""
+if command -v readlink &> /dev/null; then
+    # Method 1: Use readlink if available (most reliable)
+    SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 else
-    # Fallback: assume we're in the scripts directory
-    PROJECT_ROOT="$(cd .. && pwd 2>/dev/null)"
+    # Method 2: Traditional approach with error handling
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)" || {
+        # Method 3: Fallback - assume we're in scripts directory
+        warn "Cannot determine script directory, using fallback method"
+        SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+    }
+fi
+
+# Parent directory (project root) - robust resolution with multiple fallbacks
+PROJECT_ROOT=""
+if [[ -n "$SCRIPT_DIR" && -d "$SCRIPT_DIR" ]]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." 2>/dev/null && pwd)" || {
+        warn "Cannot access parent directory from script location"
+    }
+fi
+
+# Fallback methods if PROJECT_ROOT is still empty
+if [[ -z "$PROJECT_ROOT" ]]; then
+    # Try assuming we're in scripts subdirectory
+    if cd .. 2>/dev/null; then
+        PROJECT_ROOT="$(pwd)"
+        cd - >/dev/null || true
+    else
+        warn "Cannot determine project root, using current directory"
+        PROJECT_ROOT="$(pwd 2>/dev/null || echo "$HOME")"
+    fi
 fi
 
 # Source themes directory with fallback
@@ -130,6 +153,9 @@ install_graphite_theme() {
             # Remove git metadata to avoid permission issues
             rm -rf "$temp_dir/Graphite/.git"
             
+            # Store current directory to return to it later
+            local original_dir="$PWD"
+            
             # Install the theme with nord and dark tweaks
             cd "$temp_dir/Graphite"
             
@@ -138,6 +164,9 @@ install_graphite_theme() {
                 ./install.sh -l -t -c dark -s --tweaks nord
                 log "Graphite nord dark theme installed successfully"
             fi
+            
+            # Return to original directory before cleanup
+            cd "$original_dir" || cd "$HOME"
             
             # Cleanup
             rm -rf "$temp_dir"
@@ -162,19 +191,6 @@ install_papirus_icons() {
         log "Papirus icon theme installed via yay"
     else
         warn "Failed to install Papirus icon theme"
-    fi
-    
-    # Set Nordic color variant if papirus-folders is available
-    if command -v papirus-folders &> /dev/null; then
-        papirus-folders -C nordic --theme Papirus-Dark || warn "Failed to set Nordic color scheme"
-        log "Papirus icons set to Nordic color scheme"
-    elif command -v yay &> /dev/null; then
-        # Install papirus-folders from AUR
-        yay -S --noconfirm papirus-folders-git 2>/dev/null || yay -S --noconfirm papirus-folders 2>/dev/null || true
-        if command -v papirus-folders &> /dev/null; then
-            papirus-folders -C nordic --theme Papirus-Dark || warn "Failed to set Nordic color scheme"
-            log "Papirus icons set to Nordic color scheme"
-        fi
     fi
 }
 
