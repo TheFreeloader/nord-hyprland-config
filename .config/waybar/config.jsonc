@@ -9,7 +9,6 @@
   "modules-center": ["clock", "custom/update"],
   "modules-right": [
     "tray", 
-    "custom/keyboard-mode",
     "bluetooth",
     "network",
     "pulseaudio",
@@ -111,21 +110,6 @@
   "tray": {
     "icon-size": 14,
     "spacing": 8
-  },
-
-  // --- Custom Keyboard Mode Toggle ---
-  "custom/keyboard-mode": {
-    "exec": "cat ~/.config/hypr/.keyboard_mode 2>/dev/null || echo 'normal'",
-    "format": "{}",
-    "format-icons": {
-      "normal": "⌨️",
-      "chromebook": "💻"
-    },
-    "tooltip": true,
-    "tooltip-format": "Keyboard: {} mode\nClick to toggle",
-    "on-click": "~/.config/hypr/scripts/toggle-keyboard-mode",
-    "interval": 1,
-    "signal": 10
   }
 }
 
