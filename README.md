@@ -1,8 +1,8 @@
-# Nord Hyprland Configuration
+# Hyprland Configuration
 
-A beautiful Nord-themed Hyprland configuration with automatic installation for Arch Linux.
+A clean, minimal Hyprland configuration with automatic installation for Arch Linux.
 
-> **Special thanks to [omarchy](https://github.com/basecamp/omarchy) for the inspiration and Nord wallpaper (`omarchy-nord-1.png`) included in this configuration.** ❄️
+> **Special thanks to [omarchy](https://github.com/basecamp/omarchy) for the inspiration and Nord wallpaper (`omarchy-nord-1.png`) that can be used with this configuration.** ❄️
 
 ## 🚀 Quick Installation
 
@@ -48,9 +48,9 @@ chmod +x install.sh
 > **📱 TUI-First Approach**: This configuration prioritizes terminal-based (TUI) applications over GUI ones. Clicking Waybar modules opens tools like `wiremix` for audio, `impala` for network, and `btop` for system monitoring in Alacritty terminal windows.
 
 ### Themes
-- **GTK Theme**: Nordic (dark variant)
-- **Icon Theme**: Papirus-Dark with Nordic colors
-- **Fonts**: JetBrains Mono Nerd Font (already installed)
+- **GTK Theme**: User configurable
+- **Icon Theme**: User configurable  
+- **Fonts**: JetBrains Mono Nerd Font (system fonts)
 
 ## 🎯 System Requirements
 
@@ -64,12 +64,9 @@ The minimal installer automatically:
 
 1. **Installs yay**: If not present, builds and installs yay AUR helper
 2. **Checks dependencies**: Only installs missing packages from the required list
-3. **Backs up configs**: Creates timestamped backup in `~/.config_backup_[date]`
-4. **Installs configurations**: Copies all config files to `~/.config/`
-5. **Sets up themes**: Installs and configures Graphite Nord theme system-wide
-6. **Copies wallpaper**: Sets up Nord wallpaper from `.themes/nord/background/` to `~/Pictures/Wallpapers/`
-7. **Enables services**: Starts Bluetooth and enables SDDM
-8. **Post-setup**: Creates utility scripts and environment variables
+3. **Installs configurations**: Copies all config files to `~/.config/`
+4. **Sets up basic directories**: Creates necessary user directories
+5. **Post-setup**: Creates utility scripts and basic environment setup
 
 ## 🖥️ TUI-First Philosophy
 
@@ -90,14 +87,11 @@ This configuration embraces **Terminal User Interface (TUI)** applications over 
 - gnome-text-editor, btop, blueberry
 
 ### System Tools
+### System Tools
 - dunst, mako (notifications)
 - grim, slurp, satty (screenshots + annotation)
 - wl-clipboard (clipboard manager)
 - swaybg (wallpaper)
-
-### Network & Bluetooth
-- **impala** (TUI network manager - primary interface)
-- pulseaudio-bluetooth, bluez-utils (Bluetooth support)
 
 ### Audio & Controls (TUI-Focused)
 - **wiremix** (TUI audio mixer - primary)
@@ -123,8 +117,7 @@ This configuration embraces **Terminal User Interface (TUI)** applications over 
 
 ### Web & Utilities
 - google-chrome (web browser)
-- neofetch (system info)
-- tree, wget, curl, unzip, p7zip
+- tree, wget, curl
 - man-db, man-pages
 
 ### AUR Helper & Packages
@@ -132,7 +125,6 @@ This configuration embraces **Terminal User Interface (TUI)** applications over 
 - hyprpicker (color picker)
 - swaylock-effects (screen locker)
 - wlogout (logout menu)
-- nordic-theme (GTK theme)
 - hyprshot (screenshot utility)
 - wl-clip-persist (clipboard persistence)
 - wlsunset (blue light filter)
@@ -164,43 +156,31 @@ If you prefer to install components manually:
 ### Dependencies (Arch Linux)
 ```bash
 # Core system packages (automatically installs yay if needed)
-sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland networkmanager network-manager-applet pulseaudio-bluetooth bluez-utils gvfs gvfs-mtp file-roller evince mpv imv neofetch tree wget curl unzip p7zip xdg-user-dirs xdg-utils man-db man-pages
+sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland bluez-utils wiremix impala gvfs gvfs-mtp file-roller evince mpv imv tree wget curl xdg-user-dirs xdg-utils man-db man-pages cups cups-pdf system-config-printer gtk3 gtk4 gtk-engines sddm sddm-kcm alacritty uwsm
 
 # AUR packages (with yay - installed automatically)
-yay -S --needed hyprpicker swaylock-effects wlogout nordic-theme hyprshot wl-clip-persist wlsunset google-chrome
+yay -S --needed hyprpicker swaylock-effects wlogout hyprshot wl-clip-persist wlsunset google-chrome sddm-theme-corners-git
 ```
 
 ### Configuration Files
 ```bash
-# Backup existing configs
-cp -r ~/.config ~/.config_backup_$(date +%Y%m%d)
-
 # Copy configurations
 cp -r .config/* ~/.config/
 ```
 
 ### Themes
 ```bash
-# Nordic theme should be available via AUR or manually
+# Themes are handled through user choice - install your preferred GTK theme
 # Papirus icons should already be installed
 ```
 
 ## 🎨 Customization
 
 ### Colors
-The Nord color palette is used throughout:
-- **nord0**: `#2E3440` (Dark)
-- **nord1**: `#3B4252` 
-- **nord2**: `#434C5E`
-- **nord3**: `#4C566A`
-- **nord4**: `#D8DEE9` (Light)
-- **nord8**: `#88C0D0` (Blue)
-- **nord11**: `#BF616A` (Red)
-- **nord13**: `#EBCB8B` (Yellow)
-- **nord14**: `#A3BE8C` (Green)
+The configuration uses a clean color scheme that can be customized to your preference by modifying the respective configuration files in `~/.config/`.
 
 ### Wallpapers
-The installer automatically copies the Nord wallpaper from `.themes/nord/background/omarchy-nord-1.png` to `~/Pictures/Wallpapers/`. You can add more wallpapers there and use the `change-wallpaper` script:
+The installer creates a wallpapers directory at `~/Pictures/Wallpapers/`. You can add your wallpapers there and use the `change-wallpaper` script:
 ```bash
 change-wallpaper                    # Random wallpaper from ~/Pictures/Wallpapers/
 change-wallpaper ~/path/to/image.png # Specific wallpaper
@@ -232,10 +212,10 @@ chmod +x scripts/uninstall.sh
 ```
 
 The uninstaller offers several options:
-1. Full uninstall and restore from backup
-2. Remove configs only (keep themes)
-3. Remove themes only (keep configs)
-4. Remove everything (no restore)
+1. Remove configs only (keep themes)
+2. Remove themes only (keep configs)  
+3. Remove everything
+4. Full cleanup
 
 ## 📦 Supported Distributions
 
