@@ -31,8 +31,6 @@ else
     CONFIG_SOURCE_DIR="../.config"
 fi
 
-BACKUP_DIR="$1"
-
 log() {
     echo -e "${GREEN}[CONFIG]${NC} $1"
 }
@@ -69,17 +67,6 @@ ensure_directory() {
     fi
 }
 
-# Backup existing config
-backup_config() {
-    local config_name="$1"
-    local config_path="$HOME/.config/$config_name"
-    
-    if [[ -d "$config_path" ]] || [[ -f "$config_path" ]]; then
-        log "Backing up existing $config_name config..."
-        cp -r "$config_path" "$BACKUP_DIR/" 2>/dev/null || true
-    fi
-}
-
 # Install specific config
 install_config() {
     local config_name="$1"
@@ -93,9 +80,6 @@ install_config() {
     
     log "Installing $config_name config..."
     
-    # Backup existing config
-    backup_config "$config_name"
-    
     # Create parent directory
     mkdir -p "$(dirname "$target_path")"
     
@@ -107,11 +91,6 @@ install_config() {
 
 # Install all configs or specific ones based on parameters
 main() {
-    if [[ -z "$BACKUP_DIR" ]]; then
-        error "Backup directory not provided"
-        exit 1
-    fi
-    
     # Ensure we start from a safe directory
     cd "$HOME" || {
         error "Cannot access home directory"
@@ -124,11 +103,9 @@ main() {
     fi
     
     log "Starting configuration installation..."
-    log "Backup directory: $BACKUP_DIR"
     
     # Ensure all necessary directories exist
     ensure_directory "$HOME/.config"
-    ensure_directory "$BACKUP_DIR"
     
     # Install all configurations
     install_config "hypr"
@@ -147,8 +124,7 @@ main() {
     echo "• Rofi: Theme should work out of the box"
     echo "• Alacritty: Font configuration included"
     echo "• btop: Nordic theme applied"
-    echo ""
-    echo "All original configs have been backed up to: $BACKUP_DIR"
+}
 }
 
 # Run main function

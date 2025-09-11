@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Themes Installation Script for Nord Hyprland Config
-# This script installs GTK themes, icon themes, and cursor themes
+# This script installs GTK themes        }
+    fi
+}
+
+# Install themes from .themes directorycursor themes
 
 set -e
 
@@ -53,8 +57,6 @@ else
     # Fallback to relative path
     THEMES_SOURCE_DIR="../.themes"
 fi
-
-BACKUP_DIR="$1"
 
 log() {
     echo -e "${GREEN}[THEMES]${NC} $1"
@@ -237,16 +239,6 @@ configure_gtk_settings() {
 gtk-theme-name=Graphite-nord-Dark
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=JetBrains Mono 10
-gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
-gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
-gtk-button-images=0
-gtk-menu-images=0
-gtk-enable-event-sounds=1
-gtk-enable-input-feedback-sounds=0
-gtk-xft-antialias=1
-gtk-xft-hinting=1
-gtk-xft-hintstyle=hintfull
-gtk-xft-rgba=rgb
 gtk-application-prefer-dark-theme=1
 EOF
     
@@ -261,27 +253,6 @@ gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=JetBrains Mono 10
 gtk-application-prefer-dark-theme=1
 EOF
-    
-    # GTK2 settings
-    cat > "$HOME/.gtkrc-2.0" << EOF
-gtk-theme-name="Graphite-nord-Dark"
-gtk-icon-theme-name="Papirus-Dark"
-gtk-font-name="JetBrains Mono 10"
-gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
-gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
-gtk-button-images=0
-gtk-menu-images=0
-gtk-enable-event-sounds=1
-gtk-enable-input-feedback-sounds=0
-gtk-xft-antialias=1
-gtk-xft-hinting=1
-gtk-xft-hintstyle="hintfull"
-gtk-xft-rgba="rgb"
-EOF
-    
-    log "GTK settings configured"
-}
-
 
 
 # Main function
@@ -292,18 +263,12 @@ main() {
         exit 1
     }
     
-    if [[ -z "$BACKUP_DIR" ]]; then
-        error "Backup directory not provided"
-        exit 1
-    fi
-    
     # Validate source directory exists
     if ! validate_source_directory; then
         exit 1
     fi
     
     log "Starting themes installation..."
-    log "Backup directory: $BACKUP_DIR"
     
     # Ensure all necessary directories exist first
     ensure_directory "$HOME/.themes" false "user themes directory"
@@ -312,10 +277,6 @@ main() {
     ensure_directory "$HOME/.local/share/fonts" false "local fonts directory"
     ensure_directory "$HOME/.config/gtk-3.0" false "GTK 3 config directory"
     ensure_directory "$HOME/.config/gtk-4.0" false "GTK 4 config directory"
-    ensure_directory "$BACKUP_DIR" false "backup directory"
-    
-    # Backup existing themes
-    backup_themes
     
     # Install themes
     install_themes

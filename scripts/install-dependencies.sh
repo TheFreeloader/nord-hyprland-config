@@ -33,9 +33,6 @@ update_mirrors() {
     if ! timeout 10 sudo pacman -Sy &> /dev/null; then
         warn "Mirrors appear slow, updating to faster ones..."
         
-        # Backup current mirrorlist
-        sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup 2>/dev/null || true
-        
         # Try to install reflector for automatic mirror selection
         if sudo pacman -S --noconfirm reflector 2>/dev/null; then
             log "Using reflector to find fastest mirrors..."
@@ -225,43 +222,6 @@ select_aur_provider() {
     return 1
 }
 
-# Handle package alternatives and special cases
-get_package_alternative() {
-    local package="$1"
-    
-    case "$package" in
-        "network-manager-applet")
-            # Try different variations
-            if package_exists_in_pacman "networkmanager-applet"; then
-                echo "networkmanager-applet"
-            elif package_exists_in_pacman "nm-applet"; then
-                echo "nm-applet"
-            else
-                echo "$package"
-            fi
-            ;;
-        "pulseaudio-bluetooth")
-            # Check if pipewire setup is used instead
-            if pacman -Q pipewire &> /dev/null; then
-                if package_exists_in_pacman "pipewire-pulse"; then
-                    echo "pipewire-pulse"
-                else
-                    echo "$package"
-                fi
-            else
-                echo "$package"
-            fi
-            ;;
-        "nordic-theme")
-            # Nordic theme might be available under different names
-            echo "nordic-theme"
-            ;;
-        *)
-            echo "$package"
-            ;;
-    esac
-}
-
 # Check if package exists in pacman repos
 package_exists_in_pacman() {
     local package="$1"
@@ -352,7 +312,6 @@ install_arch_packages() {
         "cups"
         "cups-pdf"
         "system-config-printer"
-        "gtk2"
         "gtk3"
         "gtk4"
         "gtk-engines"
@@ -391,17 +350,9 @@ install_arch_packages() {
     log "🔍 Checking package availability in official repositories..."
     for package in "${all_packages[@]}"; do
         if ! pacman -Q "$package" &> /dev/null; then
-            # Check for package alternatives
-            local alt_package
-            alt_package=$(get_package_alternative "$package")
-            
-            if package_exists_in_pacman "$alt_package"; then
-                if [[ "$alt_package" != "$package" ]]; then
-                    log "📦 Using alternative: $alt_package (instead of $package)"
-                else
-                    log "✅ Found in pacman: $package"
-                fi
-                pacman_packages+=("$alt_package")
+            if package_exists_in_pacman "$package"; then
+                log "✅ Found in pacman: $package"
+                pacman_packages+=("$package")
             else
                 warn "⚠️  $package not in official repos → will try AUR"
                 fallback_to_aur+=("$package")

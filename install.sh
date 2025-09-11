@@ -103,14 +103,6 @@ check_arch() {
     fi
 }
 
-# Create backup directory
-create_backup() {
-    local backup_dir="$HOME/.config_backup_$(date +%Y%m%d_%H%M%S)"
-    log "Creating backup directory: $backup_dir"
-    mkdir -p "$backup_dir"
-    echo "$backup_dir"
-}
-
 # Main installation function
 main() {
     local failed_steps=()
@@ -140,9 +132,6 @@ main() {
     log_with_time "Starting minimal installation for Arch Linux..."
     local start_time=$(date +%s)
     
-    # Create backup
-    backup_dir=$(create_backup)
-    
     # Step 1: Install dependencies
     if run_script "$SCRIPTS_DIR/install-dependencies.sh" "install-dependencies.sh" "Dependencies Installation"; then
         success_steps+=("Dependencies")
@@ -151,14 +140,14 @@ main() {
     fi
     
     # Step 2: Install configs
-    if run_script "$SCRIPTS_DIR/install-configs.sh" "install-configs.sh" "Configuration Files Installation" "$backup_dir"; then
+    if run_script "$SCRIPTS_DIR/install-configs.sh" "install-configs.sh" "Configuration Files Installation"; then
         success_steps+=("Configurations")
     else
         failed_steps+=("Configurations")
     fi
     
     # Step 3: Install themes
-    if run_script "$SCRIPTS_DIR/install-themes.sh" "install-themes.sh" "Themes Installation" "$backup_dir"; then
+    if run_script "$SCRIPTS_DIR/install-themes.sh" "install-themes.sh" "Themes Installation"; then
         success_steps+=("Themes")
     else
         failed_steps+=("Themes")
