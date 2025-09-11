@@ -306,19 +306,19 @@ install_arch_packages() {
         "sddm"
         "sddm-kcm"
         "alacritty"
-    )
-    
-    local aur_only_packages=(
+        "uwsm"
+        "sddm-theme-sugar-candy"
+        "google-chrome"
         "hyprpicker"
         "swaylock-effects"
         "wlogout"
         "hyprshot"
         "wl-clip-persist"
         "wlsunset"
+    )
+    
+    local aur_only_packages=(
         "sddm-theme-corners-git"
-        "sddm-theme-sugar-candy"
-        "google-chrome"
-        "uwsm"
     )
     
     # Update system
@@ -436,26 +436,6 @@ install_arch_packages() {
 # Enable services
 enable_services() {
     log "Enabling necessary services..."
-    
-    # Enable NetworkManager if not already active
-    if systemctl list-unit-files | grep -q "NetworkManager.service"; then
-        if ! systemctl is-active --quiet NetworkManager; then
-            sudo systemctl enable --now NetworkManager
-            log "NetworkManager enabled and started"
-        else
-            log "NetworkManager is already running"
-        fi
-    fi
-    
-    # Enable Bluetooth if not already active
-    if systemctl list-unit-files | grep -q "bluetooth.service"; then
-        if ! systemctl is-active --quiet bluetooth; then
-            sudo systemctl enable --now bluetooth
-            log "Bluetooth enabled and started"
-        else
-            log "Bluetooth is already running"
-        fi
-    fi
     
     # Enable SDDM if not already enabled
     if systemctl list-unit-files | grep -q "sddm.service"; then
