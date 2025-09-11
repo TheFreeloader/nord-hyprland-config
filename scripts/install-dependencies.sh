@@ -431,33 +431,6 @@ install_arch_packages() {
     fi
 }
 
-
-
-# Enable services
-enable_services() {
-    log "Enabling necessary services..."
-    
-    # Enable SDDM if not already enabled
-    if systemctl list-unit-files | grep -q "sddm.service"; then
-        if ! systemctl is-enabled sddm &> /dev/null; then
-            sudo systemctl enable sddm
-            log "SDDM display manager enabled"
-        else
-            log "SDDM is already enabled"
-        fi
-    fi
-    
-    # Enable CUPS printing service if not already active
-    if systemctl list-unit-files | grep -q "cups.service"; then
-        if ! systemctl is-active --quiet cups; then
-            sudo systemctl enable --now cups
-            log "CUPS printing service enabled and started"
-        else
-            log "CUPS printing service is already running"
-        fi
-    fi
-}
-
 # Main installation function
 main() {
     log "Starting dependency installation..."
@@ -484,9 +457,8 @@ main() {
             ;;
     esac
     
-    enable_services
-    
     log "Dependencies installation completed!"
+    log "Services will be automatically available after reboot"
 }
 
 # Run main function
