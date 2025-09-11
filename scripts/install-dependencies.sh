@@ -231,12 +231,13 @@ install_arch_packages() {
         "tree"
         "wget"
         "curl"
-        "unzip"
-        "p7zip"
         "xdg-user-dirs"
         "xdg-utils"
         "man-db"
         "man-pages"
+        "cups"
+        "cups-pdf"
+        "system-config-printer"
         "gtk2"
         "gtk3"
         "gtk4"
@@ -394,6 +395,16 @@ enable_services() {
             log "SDDM display manager enabled"
         else
             log "SDDM is already enabled"
+        fi
+    fi
+    
+    # Enable CUPS printing service if not already active
+    if systemctl list-unit-files | grep -q "cups.service"; then
+        if ! systemctl is-active --quiet cups; then
+            sudo systemctl enable --now cups
+            log "CUPS printing service enabled and started"
+        else
+            log "CUPS printing service is already running"
         fi
     fi
 }
