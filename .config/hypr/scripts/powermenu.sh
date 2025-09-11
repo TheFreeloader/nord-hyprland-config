@@ -8,7 +8,7 @@ chosen=$(echo -e "$options" | rofi -dmenu -i -p "Power Menu")
 case "$chosen" in
     " Lock") 
         # If you use swaylock
-        swaylock -f -c 000000 
+        ~/.config/hypr/scripts/lock.sh
         ;;
     "󰍃 Logout") 
         hyprctl dispatch exit
