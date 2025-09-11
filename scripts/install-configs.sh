@@ -80,10 +80,15 @@ install_config() {
     
     log "Installing $config_name config..."
     
+    # Remove existing config if it exists to avoid nested directories
+    if [[ -d "$target_path" ]]; then
+        rm -rf "$target_path"
+    fi
+    
     # Create parent directory
     mkdir -p "$(dirname "$target_path")"
     
-    # Copy config
+    # Copy config contents (not the directory itself)
     cp -r "$source_path" "$target_path"
     
     log "$config_name config installed successfully"
@@ -107,12 +112,28 @@ main() {
     # Ensure all necessary directories exist
     ensure_directory "$HOME/.config"
     
-    # Install all configurations
-    install_config "hypr"
-    install_config "waybar"
-    install_config "rofi"
-    install_config "alacritty"
-    install_config "btop"
+    # Copy entire config directory at once to avoid nesting issues
+    log "Installing all configuration files..."
+    
+    # Remove existing configs to avoid conflicts
+    for config_dir in hypr waybar rofi alacritty btop; do
+        if [[ -d "$HOME/.config/$config_dir" ]]; then
+            log "Removing existing $config_dir config to avoid conflicts..."
+            rm -rf "$HOME/.config/$config_dir"
+        fi
+    done
+    
+    # Copy all configs from source
+    if [[ -d "$CONFIG_SOURCE_DIR" ]]; then
+        log "Copying configuration files from $CONFIG_SOURCE_DIR"
+        cp -r "$CONFIG_SOURCE_DIR"/* "$HOME/.config/" 2>/dev/null || {
+            warn "Some config files may not have been copied"
+        }
+        log "Configuration files installed successfully"
+    else
+        error "Source configuration directory not found: $CONFIG_SOURCE_DIR"
+        exit 1
+    fi
     
     log "Configuration installation completed!"
     

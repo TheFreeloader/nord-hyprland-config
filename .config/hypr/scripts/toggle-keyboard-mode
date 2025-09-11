@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Toggle between Normal and Chromebook keyboard modes
+# This script switches input settings and shows notification
+
+CONFIG_DIR="$HOME/.config/hypr"
+NORMAL_INPUT="$CONFIG_DIR/input-normal.conf"
+CHROMEBOOK_INPUT="$CONFIG_DIR/input-chromebook.conf"
+CURRENT_INPUT="$CONFIG_DIR/input.conf"
+MODE_FILE="$CONFIG_DIR/.keyboard_mode"
+
+# Check current mode
+if [[ -f "$MODE_FILE" ]]; then
+    CURRENT_MODE=$(cat "$MODE_FILE")
+else
+    CURRENT_MODE="normal"
+    echo "normal" > "$MODE_FILE"
+fi
+
+# Toggle mode
+if [[ "$CURRENT_MODE" == "normal" ]]; then
+    # Switch to Chromebook mode
+    cp "$CHROMEBOOK_INPUT" "$CURRENT_INPUT"
+    echo "chromebook" > "$MODE_FILE"
+    NEW_MODE="Chromebook"
+    DESCRIPTION="Alt/Search swapped, natural scrolling, gestures enabled"
+else
+    # Switch to Normal mode  
+    cp "$NORMAL_INPUT" "$CURRENT_INPUT"
+    echo "normal" > "$MODE_FILE"
+    NEW_MODE="Normal"
+    DESCRIPTION="Standard keyboard layout, regular scrolling"
+fi
+
+# Reload Hyprland config
+hyprctl reload
+
+# Show notification
+if command -v dunst &> /dev/null; then
+    notify-send "Keyboard Mode" "$NEW_MODE mode activated\n$DESCRIPTION" -i input-keyboard -t 3000
+else
+    echo "Switched to $NEW_MODE keyboard mode"
+fi
+
+# Update waybar if it's running
+if pgrep waybar > /dev/null; then
+    pkill -SIGUSR1 waybar
+fi
