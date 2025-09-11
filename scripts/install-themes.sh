@@ -294,6 +294,12 @@ install_cursor_theme() {
 
 # Main function
 main() {
+    # Ensure we start from a safe directory
+    cd "$HOME" || {
+        error "Cannot access home directory"
+        exit 1
+    }
+    
     if [[ -z "$BACKUP_DIR" ]]; then
         error "Backup directory not provided"
         exit 1

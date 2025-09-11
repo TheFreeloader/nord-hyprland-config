@@ -76,6 +76,9 @@ install_yay() {
     if ! command -v yay &> /dev/null; then
         log "Installing yay AUR helper..."
         
+        # Save current directory to return to it later
+        local original_dir="$PWD"
+        
         # Check if base-devel and git are installed
         local build_deps=("base-devel" "git")
         local missing_build_deps=()
@@ -91,31 +94,52 @@ install_yay() {
             sudo pacman -S --needed --noconfirm "${missing_build_deps[@]}"
         fi
         
-        # Create temporary directory
-        local temp_dir=$(mktemp -d)
-        cd "$temp_dir"
+        # Create temporary directory in a safe location
+        local temp_dir=$(mktemp -d -t yay-install.XXXXXX)
+        log "Building yay in temporary directory: $temp_dir"
+        
+        # Change to temp directory
+        if cd "$temp_dir"; then
+            log "Changed to build directory: $temp_dir"
+        else
+            error "Failed to change to temporary directory"
+            exit 1
+        fi
         
         # Clone and build yay
         if git clone https://aur.archlinux.org/yay.git; then
-            cd yay
-            if makepkg -si --noconfirm; then
-                log "yay installed successfully"
+            if cd yay; then
+                if makepkg -si --noconfirm; then
+                    log "yay installed successfully"
+                    # Return to original directory or home as fallback
+                    if [[ -d "$original_dir" ]]; then
+                        cd "$original_dir" || cd "$HOME"
+                    else
+                        cd "$HOME"
+                    fi
+                else
+                    error "Failed to build yay"
+                    cd "$HOME"  # Safe fallback
+                    rm -rf "$temp_dir"
+                    exit 1
+                fi
             else
-                error "Failed to build yay"
-                cd /
+                error "Failed to enter yay directory"
+                cd "$HOME"  # Safe fallback
                 rm -rf "$temp_dir"
                 exit 1
             fi
         else
             error "Failed to clone yay repository"
-            cd /
+            cd "$HOME"  # Safe fallback
             rm -rf "$temp_dir"
             exit 1
         fi
         
-        # Cleanup
-        cd /
+        # Cleanup from a safe directory
+        cd "$HOME"
         rm -rf "$temp_dir"
+        log "yay installation cleanup completed"
     else
         log "yay is already installed"
     fi
@@ -281,6 +305,7 @@ install_arch_packages() {
         "gtk-engines"
         "sddm"
         "sddm-kcm"
+        "alacritty"
     )
     
     local aur_only_packages=(
@@ -456,6 +481,12 @@ enable_services() {
 # Main installation function
 main() {
     log "Starting dependency installation..."
+    
+    # Ensure we start from a safe directory
+    cd "$HOME" || {
+        error "Cannot access home directory"
+        exit 1
+    }
     
     # Create essential directories first
     create_system_directories

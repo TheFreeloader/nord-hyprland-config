@@ -281,6 +281,88 @@ EOF
     log "You can now select 'Hyprland (UWSM)' at the login screen for better session management"
 }
 
+# Setup shell profile to auto-start Hyprland
+setup_shell_profile() {
+    log "Setting up shell profile for automatic Hyprland startup..."
+    
+    # Detect which shell profile file to use
+    local profile_file=""
+    local shell_name="$(basename "$SHELL")"
+    
+    case "$shell_name" in
+        "bash")
+            # For bash, prefer .bash_profile, fallback to .profile
+            if [[ -f "$HOME/.bash_profile" ]]; then
+                profile_file="$HOME/.bash_profile"
+            else
+                profile_file="$HOME/.profile"
+            fi
+            ;;
+        "zsh")
+            profile_file="$HOME/.zprofile"
+            ;;
+        *)
+            # Generic fallback
+            profile_file="$HOME/.profile"
+            ;;
+    esac
+    
+    log "Using profile file: $profile_file"
+    
+    # Hyprland auto-start code
+    local hyprland_autostart='
+# Auto-start Hyprland on TTY1 login
+if [ -z "$WAYLAND_DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+    # Set environment variables for Wayland
+    export XDG_SESSION_TYPE=wayland
+    export XDG_CURRENT_DESKTOP=Hyprland
+    export XDG_SESSION_DESKTOP=Hyprland
+    
+    # Start Hyprland with UWSM if available, otherwise direct
+    if command -v uwsm >/dev/null 2>&1; then
+        echo "Starting Hyprland with UWSM session management..."
+        exec uwsm start hyprland
+    else
+        echo "Starting Hyprland..."
+        exec Hyprland
+    fi
+fi'
+    
+    # Check if auto-start is already configured
+    if grep -q "Auto-start Hyprland" "$profile_file" 2>/dev/null; then
+        log "Hyprland auto-start already configured in $profile_file"
+        return
+    fi
+    
+    # Add auto-start to profile
+    echo "$hyprland_autostart" >> "$profile_file"
+    log "Added Hyprland auto-start to $profile_file"
+    log "Hyprland will automatically start on TTY1 after login"
+    
+    # Also create a manual start script for convenience
+    cat > "$HOME/.local/bin/start-hyprland" << 'EOF'
+#!/bin/bash
+# Manual Hyprland starter script
+
+# Set environment variables
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_DESKTOP=Hyprland
+
+# Start with UWSM if available
+if command -v uwsm >/dev/null 2>&1; then
+    echo "Starting Hyprland with UWSM..."
+    exec uwsm start hyprland
+else
+    echo "Starting Hyprland directly..."
+    exec Hyprland
+fi
+EOF
+    
+    chmod +x "$HOME/.local/bin/start-hyprland"
+    log "Created manual starter script: start-hyprland"
+}
+
 # Setup fonts
 setup_fonts() {
     log "Refreshing font cache..."
@@ -407,6 +489,12 @@ setup_xdg_dirs() {
 main() {
     log "Starting post-installation setup..."
     
+    # Ensure we start from a safe directory
+    cd "$HOME" || {
+        error "Cannot access home directory"
+        exit 1
+    }
+    
     # Create all necessary directories first
     create_all_directories
     
@@ -415,6 +503,7 @@ main() {
     setup_user_directories
     setup_environment
     setup_uwsm
+    setup_shell_profile
     setup_fonts
     setup_autostart
     create_scripts
@@ -425,16 +514,22 @@ main() {
     echo ""
     echo -e "${BLUE}Setup Summary:${NC}"
     echo "• Wallpapers directory: ~/Pictures/Wallpapers"
-    echo "• Screenshots directory: ~/Pictures/Screenshots"
+    echo "• Screenshots directory: ~/Pictures/Screenshots" 
     echo "• Utility scripts: ~/.local/bin/"
     echo "• Environment variables: ~/.config/environment.d/hyprland.conf"
     echo "• Autostart applications configured"
+    echo "• Shell profile configured for auto-start Hyprland"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "1. Log out and log back in (or reboot)"
-    echo "2. Start Hyprland session"
-    echo "3. Run 'change-wallpaper' to set a wallpaper"
-    echo "4. Take a screenshot with Super+Shift+S"
+    echo "1. Log out and log back in to TTY1"
+    echo "2. Hyprland will start automatically!"
+    echo "3. Alternatively: Select Hyprland at SDDM login screen"
+    echo "4. Run 'change-wallpaper' to set a wallpaper"
+    echo "5. Take a screenshot with Super+Shift+S"
+    echo ""
+    echo -e "${GREEN}Auto-start info:${NC}"
+    echo "• TTY1 login → Hyprland starts automatically"
+    echo "• Manual start: Run 'start-hyprland' command"
     echo ""
     echo "Enjoy your Nord Hyprland setup! 🎉"
 }

@@ -112,6 +112,12 @@ main() {
         exit 1
     fi
     
+    # Ensure we start from a safe directory
+    cd "$HOME" || {
+        error "Cannot access home directory"
+        exit 1
+    }
+    
     # Validate source directory exists
     if ! validate_source_directory; then
         exit 1
