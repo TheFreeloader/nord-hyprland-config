@@ -8,12 +8,13 @@
   "modules-left": ["custom/launcher", "hyprland/workspaces"],
   "modules-center": ["clock", "custom/update"],
   "modules-right": [
-    "tray", 
+    "tray",
     "bluetooth",
     "network",
     "pulseaudio",
     "cpu",
-    "battery"
+    "battery",
+    "custom/powermenu"
   ],
 
   // --- Left ---
@@ -50,19 +51,19 @@
     "format-alt": "{:%d %B %Y}",
     "tooltip": false
   },
-  
+
   // --- Right ---
-"pulseaudio": {
-  "format": "{icon} {volume}%",
-  "format-muted": "󰝟",
-  "scroll-step": 5,
-  "tooltip-format": "Volume: {volume}%",
-  "on-click": "alacritty --class=Wiremix -e wiremix",
-  "on-click-right": "pamixer -t",
-  "format-icons": {
-    "default": ["", "", ""]
-  }
-},
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟",
+    "scroll-step": 5,
+    "tooltip-format": "Volume: {volume}%",
+    "on-click": "alacritty --class=Wiremix -e wiremix",
+    "on-click-right": "pamixer -t",
+    "format-icons": {
+      "default": ["", "", ""]
+    }
+  },
 
   "cpu": {
     "interval": 5,
@@ -87,8 +88,8 @@
   "battery": {
     "format": "{capacity}% {icon}",
     "format-icons": {
-      "default": ["󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"],
-      "charging": ["󰢜","󰂆","󰂇","󰂈","󰢝","󰂉","󰢞","󰂊","󰂋","󰂅"]
+      "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+      "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
     },
     "format-full": "󰂅",
     "tooltip-format": "{capacity}% - {power:>1.0f}W",
@@ -110,6 +111,11 @@
   "tray": {
     "icon-size": 14,
     "spacing": 8
+  },
+
+  "custom/powermenu": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "~/.config/hypr/scripts/powermenu.sh"
   }
 }
-
