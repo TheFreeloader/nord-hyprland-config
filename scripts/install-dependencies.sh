@@ -258,6 +258,7 @@ install_arch_packages() {
         "sddm-theme-corners-git"
         "sddm-theme-sugar-candy"
         "google-chrome"
+        "uwsm"
     )
     
     # Update system

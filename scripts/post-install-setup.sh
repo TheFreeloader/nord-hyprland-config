@@ -146,6 +146,77 @@ EOF
     log "Environment variables configured"
 }
 
+# Setup UWSM (Universal Wayland Session Manager)
+setup_uwsm() {
+    log "Configuring UWSM (Universal Wayland Session Manager)..."
+    
+    # Check if UWSM is installed
+    if ! command -v uwsm &> /dev/null; then
+        warn "UWSM is not installed, skipping UWSM configuration"
+        return
+    fi
+    
+    # Create UWSM configuration directory
+    local uwsm_config_dir="$HOME/.config/uwsm"
+    mkdir -p "$uwsm_config_dir"
+    
+    # Create UWSM configuration for Hyprland
+    cat > "$uwsm_config_dir/hyprland.conf" << EOF
+# UWSM Configuration for Hyprland
+# Universal Wayland Session Manager configuration
+
+[Session]
+Type=wayland
+Name=Hyprland
+Exec=Hyprland
+DesktopNames=Hyprland
+
+[Environment]
+# Wayland-specific environment variables
+WAYLAND_DISPLAY=wayland-1
+XDG_SESSION_TYPE=wayland
+XDG_SESSION_DESKTOP=Hyprland
+XDG_CURRENT_DESKTOP=Hyprland
+
+# Qt/GTK environment
+QT_QPA_PLATFORM=wayland
+GDK_BACKEND=wayland,x11
+CLUTTER_BACKEND=wayland
+
+# Firefox Wayland
+MOZ_ENABLE_WAYLAND=1
+
+# Electron Wayland
+ELECTRON_OZONE_PLATFORM_HINT=wayland
+
+# Cursor theme
+XCURSOR_THEME=Nordic-cursors
+XCURSOR_SIZE=24
+EOF
+
+    # Create desktop entry for UWSM Hyprland session
+    local desktop_entry_dir="$HOME/.local/share/wayland-sessions"
+    mkdir -p "$desktop_entry_dir"
+    
+    cat > "$desktop_entry_dir/hyprland-uwsm.desktop" << EOF
+[Desktop Entry]
+Name=Hyprland (UWSM)
+Comment=Hyprland session managed by UWSM
+Exec=uwsm start hyprland
+Type=Application
+Keywords=wm;tiling
+EOF
+
+    # Initialize UWSM for the user (if not already done)
+    if [[ ! -f "$HOME/.config/uwsm/user.conf" ]]; then
+        log "Initializing UWSM for user..."
+        uwsm finalize --user || warn "UWSM user initialization failed - this is normal on first install"
+    fi
+    
+    log "UWSM configuration completed"
+    log "You can now select 'Hyprland (UWSM)' at the login screen for better session management"
+}
+
 # Setup fonts
 setup_fonts() {
     log "Refreshing font cache..."
@@ -276,6 +347,7 @@ main() {
     setup_sddm_theme
     setup_user_directories
     setup_environment
+    setup_uwsm
     setup_fonts
     setup_autostart
     create_scripts
