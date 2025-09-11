@@ -28,12 +28,6 @@ error() {
 detect_package_manager() {
     if command -v pacman &> /dev/null; then
         echo "pacman"
-    elif command -v apt &> /dev/null; then
-        echo "apt"
-    elif command -v dnf &> /dev/null; then
-        echo "dnf"
-    elif command -v zypper &> /dev/null; then
-        echo "zypper"
     else
         echo "unknown"
     fi
@@ -263,6 +257,7 @@ install_arch_packages() {
         "wlsunset"
         "sddm-theme-corners-git"
         "sddm-theme-sugar-candy"
+        "google-chrome"
     )
     
     # Update system

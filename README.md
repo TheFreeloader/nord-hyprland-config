@@ -41,7 +41,7 @@ chmod +x install.sh
 - **System controls**: brightnessctl, playerctl
 - **Media viewers**: mpv (video), imv (images), evince (PDF)
 - **Archive manager**: file-roller
-- **Web browser**: Firefox
+- **Web browser**: Google Chrome
 - **System info**: neofetch
 - **Utilities**: tree, wget, curl, unzip, p7zip
 
@@ -123,7 +123,7 @@ This configuration embraces **Terminal User Interface (TUI)** applications over 
 - xdg-user-dirs, xdg-utils
 
 ### Web & Utilities
-- firefox (web browser)
+- google-chrome (web browser)
 - neofetch (system info)
 - tree, wget, curl, unzip, p7zip
 - man-db, man-pages
@@ -165,10 +165,10 @@ If you prefer to install components manually:
 ### Dependencies (Arch Linux)
 ```bash
 # Core system packages (automatically installs yay if needed)
-sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland networkmanager network-manager-applet pulseaudio-bluetooth bluez-utils gvfs gvfs-mtp file-roller evince firefox mpv imv neofetch tree wget curl unzip p7zip xdg-user-dirs xdg-utils man-db man-pages
+sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland networkmanager network-manager-applet pulseaudio-bluetooth bluez-utils gvfs gvfs-mtp file-roller evince mpv imv neofetch tree wget curl unzip p7zip xdg-user-dirs xdg-utils man-db man-pages
 
 # AUR packages (with yay - installed automatically)
-yay -S --needed hyprpicker swaylock-effects wlogout nordic-theme hyprshot wl-clip-persist wlsunset
+yay -S --needed hyprpicker swaylock-effects wlogout nordic-theme hyprshot wl-clip-persist wlsunset google-chrome
 ```
 
 ### Configuration Files
@@ -296,7 +296,7 @@ All keybindings use **Super (Windows key)** as the main modifier.
 | `Super + Enter` | Terminal (Alacritty) |
 | `Super + Space` | App Launcher (Rofi) |
 | `Super + F` | File Manager (Nautilus) |
-| `Super + B` | Browser (Chromium) |
+| `Super + B` | Browser (Google Chrome) |
 | `Super + Shift + Space` | Toggle Waybar |
 
 ### 🪟 Window Management
