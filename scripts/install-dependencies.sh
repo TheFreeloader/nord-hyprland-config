@@ -307,7 +307,7 @@ install_arch_packages() {
     local pacman_packages=()
     local fallback_to_aur=()
     
-    log "Checking package availability in official repositories..."
+    log "🔍 Checking package availability in official repositories..."
     for package in "${all_packages[@]}"; do
         if ! pacman -Q "$package" &> /dev/null; then
             # Check for package alternatives
@@ -316,33 +316,41 @@ install_arch_packages() {
             
             if package_exists_in_pacman "$alt_package"; then
                 if [[ "$alt_package" != "$package" ]]; then
-                    log "Using alternative package: $alt_package instead of $package"
+                    log "📦 Using alternative: $alt_package (instead of $package)"
+                else
+                    log "✅ Found in pacman: $package"
                 fi
                 pacman_packages+=("$alt_package")
             else
-                warn "$package (and alternatives) not found in official repos, will try AUR"
+                warn "⚠️  $package not in official repos → will try AUR"
                 fallback_to_aur+=("$package")
             fi
+        else
+            log "⏭️  Already installed: $package"
         fi
     done
     
-    # Install packages from official repos first
+    # Install packages from official repos first (PACMAN FIRST)
     if [[ ${#pacman_packages[@]} -gt 0 ]]; then
-        log "Installing packages from official repositories: ${pacman_packages[*]}"
-        if ! sudo pacman -S --needed --noconfirm "${pacman_packages[@]}"; then
-            warn "Some packages failed to install via pacman, will retry individually"
-            # Retry failed packages individually
+        log "📥 Installing ${#pacman_packages[@]} packages from official repositories..."
+        log "Packages: ${pacman_packages[*]}"
+        if sudo pacman -S --needed --noconfirm "${pacman_packages[@]}"; then
+            log "✅ Successfully installed all pacman packages"
+        else
+            warn "⚠️  Some packages failed in batch install, retrying individually..."
+            # Retry failed packages individually with smart fallback
             for package in "${pacman_packages[@]}"; do
                 if ! pacman -Q "$package" &> /dev/null; then
+                    log "🔄 Retrying: $package (will use AUR if pacman fails)"
                     install_package_smart "$package"
                 fi
             done
         fi
     else
-        log "All official repository packages are already installed"
+        log "✅ All official repository packages are already installed"
     fi
     
-    # Install packages that need AUR
+    # Install packages that need AUR (FALLBACK + AUR-ONLY)
     local all_aur_packages=("${fallback_to_aur[@]}" "${aur_only_packages[@]}")
     local missing_aur=()
     
@@ -353,9 +361,10 @@ install_arch_packages() {
     done
     
     if [[ ${#missing_aur[@]} -gt 0 ]]; then
-        log "Installing AUR packages: ${missing_aur[*]}"
+        log "🏗️  Installing ${#missing_aur[@]} packages from AUR (includes pacman fallbacks)..."
+        log "AUR packages: ${missing_aur[*]}"
         for package in "${missing_aur[@]}"; do
-            log "Installing $package from AUR..."
+            log "📦 Installing $package from AUR..."
             
             # Handle special cases and provider selection
             local selected_package
@@ -363,22 +372,22 @@ install_arch_packages() {
             
             if [[ -n "$selected_package" ]]; then
                 if yay -S --needed --noconfirm "$selected_package"; then
-                    log "Successfully installed $selected_package"
+                    log "✅ Successfully installed $selected_package"
                 else
-                    error "Failed to install $selected_package from AUR"
+                    error "❌ Failed to install $selected_package from AUR"
                     # Continue with other packages instead of failing completely
                 fi
             else
-                error "Could not find AUR package: $package"
+                error "❌ Could not find AUR package: $package"
                 # Continue with other packages
             fi
         done
     else
-        log "All AUR packages are already installed"
+        log "✅ All AUR packages are already installed"
     fi
     
     # Summary of installation
-    log "Package installation summary:"
+    log "📊 Package installation summary:"
     local total_installed=0
     local total_failed=0
     

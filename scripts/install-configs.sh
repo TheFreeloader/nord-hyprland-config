@@ -14,7 +14,23 @@ NC='\033[0m' # No Color
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG_SOURCE_DIR="$(dirname "$SCRIPT_DIR")/.config"
+
+# Parent directory (project root) - more robust resolution  
+if [[ -n "$SCRIPT_DIR" && -d "$SCRIPT_DIR" ]]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd 2>/dev/null)"
+else
+    # Fallback: assume we're in the scripts directory
+    PROJECT_ROOT="$(cd .. && pwd 2>/dev/null)"
+fi
+
+# Source config directory with fallback
+if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT/.config" ]]; then
+    CONFIG_SOURCE_DIR="$PROJECT_ROOT/.config"
+else
+    # Fallback to relative path
+    CONFIG_SOURCE_DIR="../.config"
+fi
+
 BACKUP_DIR="$1"
 
 log() {
@@ -27,6 +43,18 @@ warn() {
 
 error() {
     echo -e "${RED}[CONFIG]${NC} $1"
+}
+
+# Validate that source directory exists
+validate_source_directory() {
+    if [[ ! -d "$CONFIG_SOURCE_DIR" ]]; then
+        error "Config source directory not found: $CONFIG_SOURCE_DIR"
+        error "Make sure you're running this script from the correct location"
+        error "Expected structure: nord-hyprland-config/.config/ should exist"
+        return 1
+    fi
+    log "Source config directory found: $CONFIG_SOURCE_DIR"
+    return 0
 }
 
 # Ensure directory exists before operations
@@ -81,6 +109,11 @@ install_config() {
 main() {
     if [[ -z "$BACKUP_DIR" ]]; then
         error "Backup directory not provided"
+        exit 1
+    fi
+    
+    # Validate source directory exists
+    if ! validate_source_directory; then
         exit 1
     fi
     

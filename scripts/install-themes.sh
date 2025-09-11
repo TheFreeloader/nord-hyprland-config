@@ -14,7 +14,23 @@ NC='\033[0m' # No Color
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-THEMES_SOURCE_DIR="$(dirname "$SCRIPT_DIR")/.themes"
+
+# Parent directory (project root) - more robust resolution
+if [[ -n "$SCRIPT_DIR" && -d "$SCRIPT_DIR" ]]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd 2>/dev/null)"
+else
+    # Fallback: assume we're in the scripts directory
+    PROJECT_ROOT="$(cd .. && pwd 2>/dev/null)"
+fi
+
+# Source themes directory with fallback
+if [[ -n "$PROJECT_ROOT" && -d "$PROJECT_ROOT/.themes" ]]; then
+    THEMES_SOURCE_DIR="$PROJECT_ROOT/.themes"
+else
+    # Fallback to relative path
+    THEMES_SOURCE_DIR="../.themes"
+fi
+
 BACKUP_DIR="$1"
 
 log() {
@@ -27,6 +43,18 @@ warn() {
 
 error() {
     echo -e "${RED}[THEMES]${NC} $1"
+}
+
+# Validate that source directory exists
+validate_source_directory() {
+    if [[ ! -d "$THEMES_SOURCE_DIR" ]]; then
+        error "Themes source directory not found: $THEMES_SOURCE_DIR"
+        error "Make sure you're running this script from the correct location"
+        error "Expected structure: nord-hyprland-config/.themes/ should exist"
+        return 1
+    fi
+    log "Source themes directory found: $THEMES_SOURCE_DIR"
+    return 0
 }
 
 # Ensure directory exists with error handling
@@ -268,6 +296,11 @@ install_cursor_theme() {
 main() {
     if [[ -z "$BACKUP_DIR" ]]; then
         error "Backup directory not provided"
+        exit 1
+    fi
+    
+    # Validate source directory exists
+    if ! validate_source_directory; then
         exit 1
     fi
     

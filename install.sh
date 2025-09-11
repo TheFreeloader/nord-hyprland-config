@@ -18,6 +18,13 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="$SCRIPT_DIR/scripts"
 
+# Validate scripts directory exists
+if [[ ! -d "$SCRIPTS_DIR" ]]; then
+    echo -e "${RED}[ERROR]${NC} Scripts directory not found: $SCRIPTS_DIR"
+    echo -e "${RED}[ERROR]${NC} Make sure you're running this script from the nord-hyprland-config directory"
+    exit 1
+fi
+
 # Log function
 log() {
     echo -e "${GREEN}[INFO]${NC} $1"
