@@ -218,7 +218,6 @@ install_arch_packages() {
         "polkit"
         "xdg-desktop-portal-hyprland"
         "qt6-wayland"
-        "pulseaudio-bluetooth"
         "bluez-utils"
         "wiremix"
         "impala"
@@ -242,7 +241,6 @@ install_arch_packages() {
         "gtk3"
         "gtk4"
         "gtk-engines"
-        "lxappearance"
         "sddm"
         "sddm-kcm"
     )
@@ -251,7 +249,6 @@ install_arch_packages() {
         "hyprpicker"
         "swaylock-effects"
         "wlogout"
-        "nordic-theme"
         "hyprshot"
         "wl-clip-persist"
         "wlsunset"
