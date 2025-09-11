@@ -51,6 +51,35 @@ error_with_time() {
     echo -e "${RED}[$(date '+%H:%M:%S')] [ERROR]${NC} $1"
 }
 
+# Check and prompt for sudo password upfront
+check_sudo_access() {
+    log "Checking sudo access..."
+    
+    if ! sudo -n true 2>/dev/null; then
+        echo ""
+        warn "This installation requires sudo access for system packages and configuration."
+        warn "You will be prompted for your password once."
+        echo ""
+        
+        # Prompt for password with proper terminal handling
+        if ! sudo -v; then
+            error "Failed to obtain sudo access. Installation cannot continue."
+            exit 1
+        fi
+        
+        # Keep sudo alive during installation
+        while true; do
+            sudo -n true
+            sleep 60
+            kill -0 "$$" 2>/dev/null || exit
+        done &
+        
+        log "Sudo access confirmed and will be maintained during installation."
+    else
+        log "Sudo access already available."
+    fi
+}
+
 # Function to run scripts with error handling
 run_script() {
     local script_path="$1"
@@ -73,7 +102,8 @@ run_script() {
     fi
     
     log_with_time "Executing: $script_name"
-    if bash "$script_path" "$@"; then
+    # Use exec to preserve terminal properly for sudo prompts
+    if (exec bash "$script_path" "$@"); then
         log_with_time "✅ SUCCESS: $description completed"
         echo ""
         return 0
@@ -110,6 +140,7 @@ main() {
     
     check_root
     check_arch
+    check_sudo_access
     
     # Check if scripts directory exists
     if [[ ! -d "$SCRIPTS_DIR" ]]; then

@@ -125,7 +125,6 @@ main() {
     echo "• Alacritty: Font configuration included"
     echo "• btop: Nordic theme applied"
 }
-}
 
 # Run main function
 main "$@"
