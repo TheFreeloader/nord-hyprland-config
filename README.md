@@ -1,284 +1,46 @@
-# Hyprland Configuration
+# Nord Hyprland Configuration
 
-A clean, minimal Hyprland configuration with automatic installation for Arch Linux.
+A minimal Hyprland setup with automatic installation for Arch Linux.
 
-> **Special thanks to [omarchy](https://github.com/basecamp/omarchy) for the inspiration and Nord wallpaper (`omarchy-nord-1.png`) that can be used with this configuration.** ❄️
+> **Special thanks to [omarchy](https://github.com/basecamp/omarchy) for the Nord wallpaper.** ❄️
 
 ## 🚀 Quick Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/TheFreeloader/nord-hyprland-config.git
 cd nord-hyprland-config
-
-# Make the install script executable
 chmod +x install.sh
-
-# Run the installer (Arch Linux only)
 ./install.sh
 ```
 
 ## 📋 What's Included
 
-### Configuration Files
-- **Hyprland**: Window manager configuration with Nord theming
-- **Waybar**: Status bar with Nord colors and custom modules
+### Core Applications
+- **Hyprland**: Wayland compositor with Nord theming
+- **Waybar**: Status bar with TUI-focused modules  
 - **Rofi**: Application launcher with Nord theme
-- **Alacritty**: Terminal emulator with Nord colorscheme
-- **btop**: System monitor with Nordic theme
+- **Alacritty**: Terminal emulator
+- **btop**: System monitor (TUI)
+- **wiremix**: Audio mixer (TUI)
+- **impala**: Network manager (TUI)
 
-### Applications Installed
-- **Hyprland**: Wayland compositor
-- **Waybar**: Status bar with TUI-focused modules
-- **Rofi**: Application launcher
-- **Nautilus**: File manager
-- **GNOME Text Editor**: Text editor
-- **btop**: System monitor with Nordic theme (TUI)
-- **Blueberry**: Bluetooth manager GUI
-- **Dunst/Mako**: Notification daemons
-- **Screenshot tools**: grim + slurp + satty (annotation)
-- **Audio controls**: wiremix (TUI), impala (network TUI), pamixer (CLI)
-- **System controls**: brightnessctl, playerctl
-- **Media viewers**: mpv (video), imv (images), evince (PDF)
-- **Archive manager**: file-roller
-- **Web browser**: Google Chrome
-- **System info**: neofetch
-- **Utilities**: tree, wget, curl, unzip, p7zip
+### Essential Tools
+- Screenshot suite (grim + slurp + satty)
+- Audio controls (pamixer, playerctl)
+- File manager (nautilus), media viewers (mpv, imv)
+- System utilities & development tools
 
-> **📱 TUI-First Approach**: This configuration prioritizes terminal-based (TUI) applications over GUI ones. Clicking Waybar modules opens tools like `wiremix` for audio, `impala` for network, and `btop` for system monitoring in Alacritty terminal windows.
+> **🖥️ TUI-First Philosophy**: Click Waybar modules to open TUI applications in terminal windows - faster, lighter, and more keyboard-friendly.
 
-### Themes
-- **GTK Theme**: User configurable
-- **Icon Theme**: User configurable  
-- **Fonts**: JetBrains Mono Nerd Font (system fonts)
+## � Installation Features
 
-## 🎯 System Requirements
+The installer automatically:
+1. **Installs missing packages** - Checks existing packages, only installs what's needed
+2. **Optimizes mirrors** - Updates to faster package mirrors if needed
+3. **Configures everything** - Copies configs, creates directories, sets up utilities
+4. **Enables services** - SDDM display manager and essential system services
 
-- **OS**: Arch Linux only
-- **Display Manager**: SDDM (will be enabled automatically)
-- **Hardware**: Standard PC, laptops, and **Chromebooks** supported
-- **Existing packages**: The installer checks for already installed packages and only installs missing ones
-
-## 💻 Chromebook Support
-
-This configuration includes comprehensive Chromebook support:
-
-### Hardware Support
-- **Touchpad**: Natural scrolling, tap-to-click, gesture navigation
-- **Keyboard**: Search key as Super/Windows key, Caps Lock as Escape
-- **Function Keys**: Brightness, volume, and Chrome OS-style shortcuts
-- **Backlight**: Keyboard backlight control script
-- **Audio**: Chromebook-specific audio drivers and configurations
-
-### Chromebook-Specific Features
-- **Gesture Navigation**: 3-finger swipe between workspaces
-- **Chrome OS Shortcuts**: Ctrl+Alt+T for terminal, Search+L for lock
-- **Key Remapping**: Alt and Search keys swapped for familiar Chrome OS feel
-- **Hardware Detection**: Automatic detection and configuration of Chromebook hardware
-
-### Supported Chromebook Models
-- Google Pixelbook and Pixel Slate
-- ASUS Chromebook series
-- Acer Chromebook series  
-- HP Chromebook series
-- Lenovo Chromebook series
-- And most other modern Chromebooks running Linux
-
-### Post-Installation for Chromebooks
-After installation, the setup script automatically:
-1. Detects Chromebook hardware
-2. Configures appropriate kernel modules
-3. Sets up udev rules for hardware access
-4. Creates Chromebook-specific utility scripts
-5. Configures touchpad and keyboard optimizations
-
-## 🛠 What the Installer Does
-
-The minimal installer automatically:
-
-1. **Installs yay**: If not present, builds and installs yay AUR helper
-2. **Checks dependencies**: Only installs missing packages from the required list
-3. **Installs configurations**: Copies all config files to `~/.config/`
-4. **Sets up basic directories**: Creates necessary user directories
-5. **Post-setup**: Creates utility scripts and basic environment setup
-
-## 🖥️ TUI-First Philosophy
-
-This configuration embraces **Terminal User Interface (TUI)** applications over traditional GUI programs:
-
-- **🎵 Audio Control**: Click Waybar volume → Opens `wiremix` (TUI) in Alacritty
-- **🌐 Network Management**: Click Waybar network → Opens `impala` (TUI) in Alacritty  
-- **📊 System Monitoring**: Click Waybar CPU → Opens `btop` (TUI) in Alacritty
-- **🔧 Quick Actions**: Right-click for instant CLI commands (e.g., `pamixer -t` to mute)
-
-**Why TUI?** Faster, lighter, more keyboard-friendly, and perfectly integrated with the terminal-centric workflow.
-
-## 📦 Packages Installed (if missing)
-
-### Core Components
-- hyprland, waybar, rofi
-- nautilus (file manager)
-- gnome-text-editor, btop, blueberry
-
-### System Tools
-### System Tools
-- dunst, mako (notifications)
-- grim, slurp, satty (screenshots + annotation)
-- wl-clipboard (clipboard manager)
-- swaybg (wallpaper)
-
-### Audio & Controls (TUI-Focused)
-- **wiremix** (TUI audio mixer - primary)
-- **impala** (TUI network manager)
-- **pamixer** (CLI audio control)
-- **pulsemixer** (TUI audio mixer - alternative)
-- brightnessctl (brightness control)
-- playerctl (media control)
-
-### File Management & Viewers
-- nautilus (file manager)
-- gvfs, gvfs-mtp (virtual file systems)
-- file-roller (archive manager)
-- evince (PDF viewer)
-- mpv (video player)
-- imv (image viewer)
-
-### System Integration
-- polkit (privilege escalation)
-- xdg-desktop-portal-hyprland (desktop integration)
-- qt6-wayland (Qt Wayland support)
-- xdg-user-dirs, xdg-utils
-
-### Web & Utilities
-- google-chrome (web browser)
-- tree, wget, curl
-- man-db, man-pages
-
-### AUR Helper & Packages
-- **yay** (installed automatically if missing)
-- hyprpicker (color picker)
-- swaylock-effects (screen locker)
-- wlogout (logout menu)
-- hyprshot (screenshot utility)
-- wl-clip-persist (clipboard persistence)
-- wlsunset (blue light filter)
-
-## 📁 Directory Structure
-
-```
-nord-hyprland-config/
-├── install.sh                    # Main installation script
-├── scripts/
-│   ├── install-dependencies.sh   # Package installation (Arch only)
-│   ├── install-configs.sh        # Configuration files
-│   ├── install-themes.sh         # Theme installation
-│   ├── post-install-setup.sh     # Post-installation setup
-│   └── uninstall.sh             # Uninstallation script
-├── .config/
-│   ├── hypr/                    # Hyprland configuration
-│   ├── waybar/                  # Waybar configuration
-│   ├── rofi/                    # Rofi configuration
-│   ├── alacritty/               # Alacritty configuration
-│   └── btop/                    # btop configuration
-└── README.md
-```
-
-## 🔧 Manual Installation
-
-If you prefer to install components manually:
-
-### Dependencies (Arch Linux)
-```bash
-# Core system packages (automatically installs yay if needed)
-sudo pacman -S --needed hyprland waybar rofi nautilus gnome-text-editor btop blueberry dunst grim slurp satty wl-clipboard swaybg mako pavucontrol brightnessctl playerctl pamixer pulsemixer polkit xdg-desktop-portal-hyprland qt6-wayland bluez-utils wiremix impala gvfs gvfs-mtp file-roller evince mpv imv tree wget curl xdg-user-dirs xdg-utils man-db man-pages cups cups-pdf system-config-printer gtk3 gtk4 gtk-engines sddm sddm-kcm alacritty uwsm
-
-# AUR packages (with yay - installed automatically)
-yay -S --needed hyprpicker swaylock-effects wlogout hyprshot wl-clip-persist wlsunset google-chrome sddm-theme-corners-git
-```
-
-### Configuration Files
-```bash
-# Copy configurations
-cp -r .config/* ~/.config/
-```
-
-### Themes
-```bash
-# Themes are handled through user choice - install your preferred GTK theme
-# Papirus icons should already be installed
-```
-
-## 🎨 Customization
-
-### Colors
-The configuration uses a clean color scheme that can be customized to your preference by modifying the respective configuration files in `~/.config/`.
-
-### Wallpapers
-The installer creates a wallpapers directory at `~/Pictures/Wallpapers/`. You can add your wallpapers there and use the `change-wallpaper` script:
-```bash
-change-wallpaper                    # Random wallpaper from ~/Pictures/Wallpapers/
-change-wallpaper ~/path/to/image.png # Specific wallpaper
-```
-
-### Screenshots
-Use the `screenshot` script:
-```bash
-screenshot full     # Full screen
-screenshot area     # Select area
-screenshot window   # Active window
-```
-
-## 🔄 Updating
-
-To update the configuration:
-```bash
-cd nord-hyprland-config
-git pull
-./install.sh
-```
-
-## 🗑 Uninstalling
-
-To uninstall the configuration:
-```bash
-chmod +x scripts/uninstall.sh
-./scripts/uninstall.sh
-```
-
-The uninstaller offers several options:
-1. Remove configs only (keep themes)
-2. Remove themes only (keep configs)  
-3. Remove everything
-4. Full cleanup
-
-## 📦 Supported Distributions
-
-- **Arch Linux** (Full automatic support)
-- **Other distributions** (Manual installation required)
-
-For non-Arch users, please install the dependencies manually and then copy the configuration files.
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Hyprland won't start:**
-- Check if your GPU supports Wayland
-- Ensure you're not running as root
-- Check logs: `journalctl -u hyprland`
-
-**Themes not applying:**
-- Log out and log back in
-- Run `gsettings set org.gnome.desktop.interface gtk-theme 'Nordic'`
-- Check GTK settings in `~/.config/gtk-3.0/settings.ini`
-
-**Missing fonts:**
-- Run `fc-cache -fv` to refresh font cache
-- Install missing fonts manually
-
-**Audio not working:**
-- Check PipeWire status: `systemctl --user status pipewire`
-- Restart audio: `systemctl --user restart pipewire`
+> **Enhanced Setup**: Modified dependencies and post-install scripts for improved performance and compatibility.
 
 ## 📸 Screenshots
 
@@ -288,16 +50,97 @@ For non-Arch users, please install the dependencies manually and then copy the c
 <img src="screenshots/01-desktop-overview.png" width="45%" alt="Desktop Overview">
 <img src="screenshots/02-waybar-details.png" width="45%" alt="Waybar Details">
 
-*Clean Nord-themed desktop with Hyprland window manager and TUI-focused Waybar*
-
 ### Application Launcher & TUI Tools
 <img src="screenshots/03-rofi-launcher.png" width="30%" alt="Rofi Launcher">
 <img src="screenshots/04-terminal-tui.png" width="30%" alt="Terminal TUI">
 <img src="screenshots/05-wiremix-tui.png" width="30%" alt="Wiremix TUI">
 
-*Rofi launcher, btop system monitor, and wiremix audio mixer - all with Nord theming*
+*Nord-themed desktop with TUI-focused workflow*
 
 </div>
+
+## ⌨️ Keyboard Shortcuts
+
+### 🚀 Applications
+| Key | Action |
+|-----|--------|
+| `Super + Enter` | Terminal |
+| `Super + Space` | App Launcher |
+| `Super + F` | File Manager |
+| `Super + B` | Browser |
+
+### 🪟 Window Management
+| Key | Action |
+|-----|--------|
+| `Super + W` | Close window |
+| `Super + V` | Toggle floating |
+| `Super + J` | Toggle split |
+| `Super + M` | Exit Hyprland |
+
+### 🔄 Navigation
+| Key | Action |
+|-----|--------|
+| `Super + Arrow Keys` | Move focus |
+| `Super + 1-9,0` | Switch workspace |
+| `Super + Shift + 1-9,0` | Move window to workspace |
+| `Super + Tab` | Next workspace |
+
+### 📷 Screenshots
+| Key | Action |
+|-----|--------|
+| `Print` | Screenshot region |
+| `Shift + Print` | Screenshot window |
+| `Ctrl + Print` | Screenshot full screen |
+
+### 🎵 Media Controls
+| Key | Action |
+|-----|--------|
+| `Volume Up/Down` | Adjust volume |
+| `Mute` | Toggle mute |
+| `Brightness Up/Down` | Adjust brightness |
+| `Play/Pause` | Media control |
+
+### 🖱️ Mouse
+| Action | Result |
+|--------|--------|
+| `Super + Left Drag` | Move window |
+| `Super + Right Drag` | Resize window |
+| `Super + Scroll` | Switch workspaces |
+
+## 🎨 Customization
+
+### Wallpapers
+```bash
+change-wallpaper                    # Random from ~/Pictures/Wallpapers/
+change-wallpaper ~/path/to/image    # Specific wallpaper
+```
+
+### Screenshots
+```bash
+screenshot full     # Full screen
+screenshot area     # Select area
+screenshot window   # Active window
+```
+
+## 🔄 Updates & Maintenance
+
+```bash
+# Update configuration
+cd nord-hyprland-config && git pull && ./install.sh
+
+# Uninstall
+./scripts/uninstall.sh
+```
+
+## 🙏 Credits
+
+- [omarchy](https://github.com/basecamp/omarchy)
+- [Nord Project](https://www.nordtheme.com/)
+- [Hyprland](https://hyprland.org/)
+
+---
+
+**Enjoy your minimal Nord Hyprland setup! ❄️**
 
 ## ⌨️ Keybindings
 
