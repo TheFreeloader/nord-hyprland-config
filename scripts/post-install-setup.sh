@@ -314,6 +314,195 @@ setup_xdg_dirs() {
     fi
 }
 
+# Setup Chromebook-specific configurations
+setup_chromebook_support() {
+    log "Setting up Chromebook hardware support..."
+    
+    # Check if running on a Chromebook
+    if [[ -e /proc/device-tree/compatible ]] && grep -q "google" /proc/device-tree/compatible 2>/dev/null; then
+        log "Chromebook hardware detected"
+    elif lsusb | grep -i "google\|chromebook" &> /dev/null; then
+        log "Google/Chromebook hardware detected via USB"
+    elif dmesg | grep -i "chromebook\|google" &> /dev/null 2>&1; then
+        log "Chromebook hardware detected via dmesg"
+    else
+        log "Setting up generic Chromebook support configuration"
+    fi
+    
+    # Create Chromebook-specific configuration
+    local chromebook_config="$HOME/.config/hypr/chromebook.conf"
+    
+    cat > "$chromebook_config" << 'EOF'
+# Chromebook-specific Hyprland configuration
+# Source this file from your main hyprland.conf
+
+# Chromebook keyboard optimizations
+input {
+    kb_options = caps:escape,altwin:swap_lalt_lwin
+    
+    touchpad {
+        natural_scroll = true
+        scroll_factor = 0.3
+        middle_button_emulation = true
+        tap_button_map = lrm
+        clickfinger_behavior = true
+        drag_lock = true
+    }
+}
+
+# Enable gesture navigation (common on Chromebooks)
+gestures {
+    workspace_swipe = true
+    workspace_swipe_fingers = 3
+    workspace_swipe_distance = 300
+    workspace_swipe_invert = true
+}
+
+# Chromebook-specific device rules
+device {
+    name = google-chromebook-pixel-keyboard
+    kb_options = caps:escape,altwin:swap_lalt_lwin
+}
+
+device {
+    name = at-translated-set-2-keyboard  
+    kb_options = caps:escape,altwin:swap_lalt_lwin
+}
+
+# Common Chromebook touchpad names
+device {
+    name = atmel_mxt_ts
+    sensitivity = 0.3
+}
+
+device {
+    name = elan-touchpad
+    sensitivity = 0.3
+    natural_scroll = true
+}
+
+device {
+    name = synaptics-touchpad
+    sensitivity = 0.3 
+    natural_scroll = true
+}
+EOF
+
+    # Create kernel module configuration for Chromebook hardware
+    local modules_conf="/etc/modules-load.d/chromebook.conf"
+    
+    if [[ ! -f "$modules_conf" ]]; then
+        log "Creating Chromebook kernel modules configuration..."
+        sudo tee "$modules_conf" > /dev/null << 'EOF'
+# Chromebook-specific kernel modules
+cros_ec
+cros_ec_i2c
+cros_ec_spi
+cros_usbpd_charger
+cros_usbpd_logger
+chromeos_laptop
+chromeos_pstore
+EOF
+    fi
+    
+    # Create udev rules for Chromebook hardware
+    local udev_rules="/etc/udev/rules.d/90-chromebook.rules"
+    
+    if [[ ! -f "$udev_rules" ]]; then
+        log "Creating Chromebook udev rules..."
+        sudo tee "$udev_rules" > /dev/null << 'EOF'
+# Chromebook-specific udev rules
+
+# Fix keyboard backlight
+SUBSYSTEM=="leds", KERNEL=="chromeos::kbd_backlight", TAG+="uaccess"
+
+# Fix touchpad
+KERNEL=="event*", ATTRS{name}=="Atmel maXTouch Touchpad", SYMLINK+="input/touchpad0"
+KERNEL=="event*", ATTRS{name}=="Elan Touchpad", SYMLINK+="input/touchpad0"
+
+# Fix audio
+SUBSYSTEM=="sound", ATTRS{id}=="bytcht-es8316", TAG+="uaccess"
+SUBSYSTEM=="sound", ATTRS{id}=="byt-max98090", TAG+="uaccess"
+
+# Power management
+KERNEL=="cros-ec-accel*", TAG+="uaccess"
+KERNEL=="cros-ec-gyro*", TAG+="uaccess"
+KERNEL=="cros-ec-light*", TAG+="uaccess"
+EOF
+    fi
+    
+    # Create Chromebook utility scripts
+    local scripts_dir="$HOME/.local/bin"
+    
+    # Chromebook keyboard backlight script
+    cat > "$scripts_dir/chromebook-kbd-backlight" << 'EOF'
+#!/bin/bash
+# Chromebook keyboard backlight control
+
+BACKLIGHT_PATH="/sys/class/leds/chromeos::kbd_backlight/brightness"
+MAX_PATH="/sys/class/leds/chromeos::kbd_backlight/max_brightness"
+
+if [[ ! -f "$BACKLIGHT_PATH" ]]; then
+    echo "Chromebook keyboard backlight not found"
+    exit 1
+fi
+
+case "$1" in
+    "up"|"+"|"increase")
+        if [[ -f "$MAX_PATH" ]]; then
+            max_brightness=$(cat "$MAX_PATH")
+            current=$(cat "$BACKLIGHT_PATH")
+            new_brightness=$((current + max_brightness / 10))
+            if [[ $new_brightness -gt $max_brightness ]]; then
+                new_brightness=$max_brightness
+            fi
+            echo $new_brightness | sudo tee "$BACKLIGHT_PATH" > /dev/null
+        fi
+        ;;
+    "down"|"-"|"decrease")
+        current=$(cat "$BACKLIGHT_PATH")
+        max_brightness=$(cat "$MAX_PATH" 2>/dev/null || echo 100)
+        new_brightness=$((current - max_brightness / 10))
+        if [[ $new_brightness -lt 0 ]]; then
+            new_brightness=0
+        fi
+        echo $new_brightness | sudo tee "$BACKLIGHT_PATH" > /dev/null
+        ;;
+    "toggle"|"t")
+        current=$(cat "$BACKLIGHT_PATH")
+        if [[ $current -eq 0 ]]; then
+            max_brightness=$(cat "$MAX_PATH" 2>/dev/null || echo 100)
+            echo $((max_brightness / 2)) | sudo tee "$BACKLIGHT_PATH" > /dev/null
+        else
+            echo 0 | sudo tee "$BACKLIGHT_PATH" > /dev/null
+        fi
+        ;;
+    *)
+        echo "Usage: $0 [up|down|toggle]"
+        echo "Current brightness: $(cat "$BACKLIGHT_PATH")"
+        ;;
+esac
+EOF
+    
+    chmod +x "$scripts_dir/chromebook-kbd-backlight"
+    
+    # Update Hyprland config to source chromebook.conf
+    local hyprland_conf="$HOME/.config/hypr/hyprland.conf"
+    if [[ -f "$hyprland_conf" ]] && ! grep -q "chromebook.conf" "$hyprland_conf"; then
+        echo "" >> "$hyprland_conf"
+        echo "# Chromebook-specific configuration" >> "$hyprland_conf"
+        echo "source = ~/.config/hypr/chromebook.conf" >> "$hyprland_conf"
+    fi
+    
+    log "Chromebook support configuration completed"
+    log "• Created chromebook-specific config: ~/.config/hypr/chromebook.conf"
+    log "• Added kernel modules: /etc/modules-load.d/chromebook.conf"
+    log "• Added udev rules: /etc/udev/rules.d/90-chromebook.rules"
+    log "• Created utility script: chromebook-kbd-backlight"
+    
+    warn "Note: Reboot required for kernel modules and udev rules to take effect"
+}
+
 # Main function
 main() {
     log "Starting post-installation setup..."
@@ -336,6 +525,7 @@ main() {
     setup_autostart
     create_scripts
     setup_xdg_dirs
+    setup_chromebook_support
     
     log "Post-installation setup completed!"
     

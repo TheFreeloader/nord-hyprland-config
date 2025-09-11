@@ -56,7 +56,41 @@ chmod +x install.sh
 
 - **OS**: Arch Linux only
 - **Display Manager**: SDDM (will be enabled automatically)
+- **Hardware**: Standard PC, laptops, and **Chromebooks** supported
 - **Existing packages**: The installer checks for already installed packages and only installs missing ones
+
+## 💻 Chromebook Support
+
+This configuration includes comprehensive Chromebook support:
+
+### Hardware Support
+- **Touchpad**: Natural scrolling, tap-to-click, gesture navigation
+- **Keyboard**: Search key as Super/Windows key, Caps Lock as Escape
+- **Function Keys**: Brightness, volume, and Chrome OS-style shortcuts
+- **Backlight**: Keyboard backlight control script
+- **Audio**: Chromebook-specific audio drivers and configurations
+
+### Chromebook-Specific Features
+- **Gesture Navigation**: 3-finger swipe between workspaces
+- **Chrome OS Shortcuts**: Ctrl+Alt+T for terminal, Search+L for lock
+- **Key Remapping**: Alt and Search keys swapped for familiar Chrome OS feel
+- **Hardware Detection**: Automatic detection and configuration of Chromebook hardware
+
+### Supported Chromebook Models
+- Google Pixelbook and Pixel Slate
+- ASUS Chromebook series
+- Acer Chromebook series  
+- HP Chromebook series
+- Lenovo Chromebook series
+- And most other modern Chromebooks running Linux
+
+### Post-Installation for Chromebooks
+After installation, the setup script automatically:
+1. Detects Chromebook hardware
+2. Configures appropriate kernel modules
+3. Sets up udev rules for hardware access
+4. Creates Chromebook-specific utility scripts
+5. Configures touchpad and keyboard optimizations
 
 ## 🛠 What the Installer Does
 
@@ -321,6 +355,35 @@ All keybindings use **Super (Windows key)** as the main modifier.
 | `Super + Left Click + Drag` | Move window |
 | `Super + Right Click + Drag` | Resize window |
 | `Super + Scroll` | Switch workspaces |
+
+### 💻 Chromebook-Specific Keybindings
+
+| Key | Action |
+|-----|--------|
+| `Ctrl + Alt + T` | Terminal (Chrome OS style) |
+| `Search + L` | Lock screen |
+| `Search + F6` | Brightness down |
+| `Search + F7` | Brightness up |
+| `Search + F8` | Toggle mute |
+| `Search + F9` | Volume down |
+| `Search + F10` | Volume up |
+| `Alt + Tab` | Window switching |
+| `Alt + F4` | Close window |
+| `Alt + 1-9` | Switch to workspace |
+| `Ctrl + F5` | Screenshot (Show Windows key) |
+| `Ctrl + Shift + F5` | Partial screenshot |
+| `Ctrl + W` | Close window (browser-style) |
+| `Ctrl + Shift + T` | New terminal |
+
+> **📝 Note**: On Chromebooks, the Search key functions as the Super/Windows key, and Alt/Search keys are swapped for familiar Chrome OS navigation.
+
+### 🔧 Chromebook Utilities
+
+| Command | Function |
+|---------|----------|
+| `chromebook-kbd-backlight up` | Increase keyboard backlight |
+| `chromebook-kbd-backlight down` | Decrease keyboard backlight |
+| `chromebook-kbd-backlight toggle` | Toggle keyboard backlight |
 
 > **💡 Tip**: TUI applications (wiremix, impala, btop) can be accessed by clicking their respective Waybar modules!
 

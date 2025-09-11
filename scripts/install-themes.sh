@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# Themes Installation Script for Nord Hyprland Config
-# This script installs GTK themes        }
-    fi
-}
-
-# Install themes from .themes directorycursor themes
+# Themes Installation Script for Hyprland Config
+# This script installs GTK themes, icon themes, and cursor themes
 
 set -e
 

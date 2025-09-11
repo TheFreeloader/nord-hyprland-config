@@ -327,6 +327,8 @@ install_arch_packages() {
         "hyprshot"
         "wl-clip-persist"
         "wlsunset"
+        "libinput"
+        "xf86-input-libinput"
     )
     
     local aur_only_packages=(
