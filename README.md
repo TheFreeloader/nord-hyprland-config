@@ -132,14 +132,6 @@ cd nord-hyprland-config && git pull && ./install.sh
 ./scripts/uninstall.sh
 ```
 
-## 🙏 Credits
-
-- [omarchy](https://github.com/basecamp/omarchy)
-- [Nord Project](https://www.nordtheme.com/)
-- [Hyprland](https://hyprland.org/)
-
----
-
 **Enjoy your minimal Nord Hyprland setup! ❄️**
 
 ## ⌨️ Keybindings
@@ -197,36 +189,7 @@ All keybindings use **Super (Windows key)** as the main modifier.
 |--------|--------|
 | `Super + Left Click + Drag` | Move window |
 | `Super + Right Click + Drag` | Resize window |
-| `Super + Scroll` | Switch workspaces |
-
-### 💻 Chromebook-Specific Keybindings
-
-| Key | Action |
-|-----|--------|
-| `Ctrl + Alt + T` | Terminal (Chrome OS style) |
-| `Search + L` | Lock screen |
-| `Search + F6` | Brightness down |
-| `Search + F7` | Brightness up |
-| `Search + F8` | Toggle mute |
-| `Search + F9` | Volume down |
-| `Search + F10` | Volume up |
-| `Alt + Tab` | Window switching |
-| `Alt + F4` | Close window |
-| `Alt + 1-9` | Switch to workspace |
-| `Ctrl + F5` | Screenshot (Show Windows key) |
-| `Ctrl + Shift + F5` | Partial screenshot |
-| `Ctrl + W` | Close window (browser-style) |
-| `Ctrl + Shift + T` | New terminal |
-
-> **📝 Note**: On Chromebooks, the Search key functions as the Super/Windows key, and Alt/Search keys are swapped for familiar Chrome OS navigation.
-
-### 🔧 Chromebook Utilities
-
-| Command | Function |
-|---------|----------|
-| `chromebook-kbd-backlight up` | Increase keyboard backlight |
-| `chromebook-kbd-backlight down` | Decrease keyboard backlight |
-| `chromebook-kbd-backlight toggle` | Toggle keyboard backlight |
+| `Super + Scroll` | Switch workspaces
 
 > **💡 Tip**: TUI applications (wiremix, impala, btop) can be accessed by clicking their respective Waybar modules!
 
