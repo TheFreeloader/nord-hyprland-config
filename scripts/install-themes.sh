@@ -29,6 +29,28 @@ error() {
     echo -e "${RED}[THEMES]${NC} $1"
 }
 
+# Ensure directory exists with error handling
+ensure_directory() {
+    local dir="$1"
+    local use_sudo="${2:-false}"
+    local description="${3:-directory}"
+    
+    if [[ ! -d "$dir" ]]; then
+        log "Creating $description: $dir"
+        if [[ "$use_sudo" == "true" ]]; then
+            sudo mkdir -p "$dir" || {
+                error "Failed to create $description: $dir"
+                return 1
+            }
+        else
+            mkdir -p "$dir" || {
+                error "Failed to create $description: $dir"
+                return 1
+            }
+        fi
+    fi
+}
+
 # Backup existing themes
 backup_themes() {
     if [[ -d "$HOME/.themes" ]]; then
@@ -251,6 +273,15 @@ main() {
     
     log "Starting themes installation..."
     log "Backup directory: $BACKUP_DIR"
+    
+    # Ensure all necessary directories exist first
+    ensure_directory "$HOME/.themes" false "user themes directory"
+    ensure_directory "$HOME/.local/share/themes" false "local themes directory"
+    ensure_directory "$HOME/.local/share/icons" false "local icons directory"
+    ensure_directory "$HOME/.local/share/fonts" false "local fonts directory"
+    ensure_directory "$HOME/.config/gtk-3.0" false "GTK 3 config directory"
+    ensure_directory "$HOME/.config/gtk-4.0" false "GTK 4 config directory"
+    ensure_directory "$BACKUP_DIR" false "backup directory"
     
     # Backup existing themes
     backup_themes

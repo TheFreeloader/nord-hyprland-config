@@ -29,6 +29,18 @@ error() {
     echo -e "${RED}[CONFIG]${NC} $1"
 }
 
+# Ensure directory exists before operations
+ensure_directory() {
+    local dir="$1"
+    if [[ ! -d "$dir" ]]; then
+        log "Creating directory: $dir"
+        mkdir -p "$dir" || {
+            error "Failed to create directory: $dir"
+            return 1
+        }
+    fi
+}
+
 # Backup existing config
 backup_config() {
     local config_name="$1"
@@ -75,8 +87,9 @@ main() {
     log "Starting configuration installation..."
     log "Backup directory: $BACKUP_DIR"
     
-    # Create .config directory if it doesn't exist
-    mkdir -p "$HOME/.config"
+    # Ensure all necessary directories exist
+    ensure_directory "$HOME/.config"
+    ensure_directory "$BACKUP_DIR"
     
     # Install all configurations
     install_config "hypr"

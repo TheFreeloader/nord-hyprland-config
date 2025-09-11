@@ -24,6 +24,70 @@ error() {
     echo -e "${RED}[SETUP]${NC} $1"
 }
 
+# Ensure directory exists - create if missing with comprehensive error handling
+ensure_directory() {
+    local dir="$1"
+    local use_sudo="${2:-false}"
+    local description="${3:-directory}"
+    
+    if [[ ! -d "$dir" ]]; then
+        log "Creating $description: $dir"
+        if [[ "$use_sudo" == "true" ]]; then
+            if sudo mkdir -p "$dir"; then
+                log "Successfully created $description: $dir"
+            else
+                error "Failed to create $description: $dir"
+                return 1
+            fi
+        else
+            if mkdir -p "$dir"; then
+                log "Successfully created $description: $dir"
+            else
+                error "Failed to create $description: $dir"
+                return 1
+            fi
+        fi
+    fi
+}
+
+# Create all necessary directories upfront
+create_all_directories() {
+    log "Ensuring all necessary directories exist..."
+    
+    # User configuration directories
+    ensure_directory "$HOME/.config" false "user config directory"
+    ensure_directory "$HOME/.config/environment.d" false "environment config directory"
+    ensure_directory "$HOME/.config/uwsm" false "UWSM config directory"
+    
+    # User local directories
+    ensure_directory "$HOME/.local" false "user local directory"
+    ensure_directory "$HOME/.local/bin" false "user bin directory"
+    ensure_directory "$HOME/.local/share" false "user share directory"
+    ensure_directory "$HOME/.local/share/applications" false "user applications directory"
+    ensure_directory "$HOME/.local/share/fonts" false "user fonts directory"
+    ensure_directory "$HOME/.local/share/wayland-sessions" false "wayland sessions directory"
+    
+    # User theme directories
+    ensure_directory "$HOME/.themes" false "user themes directory"
+    
+    # User media directories
+    ensure_directory "$HOME/Pictures" false "Pictures directory"
+    ensure_directory "$HOME/Pictures/Wallpapers" false "wallpapers directory"
+    ensure_directory "$HOME/Pictures/Screenshots" false "screenshots directory"
+    
+    # XDG directories
+    ensure_directory "$HOME/Desktop" false "Desktop directory"
+    ensure_directory "$HOME/Documents" false "Documents directory"
+    ensure_directory "$HOME/Downloads" false "Downloads directory"
+    ensure_directory "$HOME/Music" false "Music directory"
+    ensure_directory "$HOME/Videos" false "Videos directory"
+    
+    # System directories (with sudo)
+    ensure_directory "/etc/sddm.conf.d" true "SDDM config directory"
+    
+    log "All directories verified/created successfully"
+}
+
 # Setup wallpaper directory
 setup_wallpapers() {
     log "Setting up wallpapers directory..."
@@ -342,6 +406,9 @@ setup_xdg_dirs() {
 # Main function
 main() {
     log "Starting post-installation setup..."
+    
+    # Create all necessary directories first
+    create_all_directories
     
     setup_wallpapers
     setup_sddm_theme

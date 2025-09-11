@@ -24,6 +24,44 @@ error() {
     echo -e "${RED}[DEPS]${NC} $1"
 }
 
+# Ensure directory exists - create if missing
+ensure_directory() {
+    local dir="$1"
+    local use_sudo="${2:-false}"
+    
+    if [[ ! -d "$dir" ]]; then
+        log "Creating directory: $dir"
+        if [[ "$use_sudo" == "true" ]]; then
+            sudo mkdir -p "$dir"
+        else
+            mkdir -p "$dir"
+        fi
+    fi
+}
+
+# Create essential system directories
+create_system_directories() {
+    log "Ensuring system directories exist..."
+    
+    # User directories
+    ensure_directory "$HOME/.config"
+    ensure_directory "$HOME/.local/bin"
+    ensure_directory "$HOME/.local/share"
+    ensure_directory "$HOME/.local/share/applications"
+    ensure_directory "$HOME/.local/share/icons"
+    ensure_directory "$HOME/.local/share/themes"
+    ensure_directory "$HOME/.themes"
+    ensure_directory "$HOME/Pictures"
+    ensure_directory "$HOME/Pictures/Wallpapers"
+    ensure_directory "$HOME/Pictures/Screenshots"
+    
+    # System directories (with sudo)
+    ensure_directory "/etc/sddm.conf.d" "true"
+    ensure_directory "/usr/local/bin" "true"
+    
+    log "Essential directories created"
+}
+
 # Detect package manager
 detect_package_manager() {
     if command -v pacman &> /dev/null; then
@@ -409,6 +447,9 @@ enable_services() {
 # Main installation function
 main() {
     log "Starting dependency installation..."
+    
+    # Create essential directories first
+    create_system_directories
     
     local package_manager=$(detect_package_manager)
     
