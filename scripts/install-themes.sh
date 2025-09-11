@@ -250,6 +250,8 @@ gtk-font-name=JetBrains Mono 10
 gtk-application-prefer-dark-theme=1
 EOF
 
+    log "GTK settings configured"
+}
 
 # Main function
 main() {
